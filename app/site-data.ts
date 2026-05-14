@@ -2,8 +2,8 @@ export const ui = {
       sv: {
         brandName: 'Lös verkliga problem',
         brandSub: 'Sverige-först problem intelligence',
-        navTop10: 'Top 10 Problem',
-        navAllProblems: 'Alla problem',
+        navTop10: 'Top 10 Problems',
+        navAllProblems: 'All Problems',
         navMission: 'Mission',
         heroEyebrow: 'Sverige-first founder intelligence',
         missionLabel: 'Vårt uppdrag',
