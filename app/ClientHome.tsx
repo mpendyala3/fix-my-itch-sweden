@@ -1,7 +1,6 @@
 'use client';
 
-import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { categories, categoryOrder, type CategoryId, type Language, ui } from './site-data';
 
 const subjects: Record<CategoryId, { sv: string; en: string }> = {
@@ -34,9 +33,11 @@ export function HomePage() {
   const categoryMeta = category[lang];
   const items = category.items;
 
-  const chrome = useMemo(() => ({
+  const chrome = {
     sv: {
       title: 'ALLA PROBLEM',
+      top10Title: 'TOP 10 PROBLEM',
+      top10Body: 'De tio högst prioriterade problemen i vald kategori — skrivna som frågor, med kort förklaring bakom varje rad.',
       sub: 'Filtrera till vänster. Läs de viktigaste problemen till höger. Klicka på + för att öppna en kort förklaring av vad problemet faktiskt är.',
       filterBy: 'Filtrera efter',
       category: 'Kategori',
@@ -48,15 +49,11 @@ export function HomePage() {
       whyThisMatters: 'Varför det spelar roll',
       open: 'Öppna',
       close: 'Stäng',
-      insightTitle: 'Kuraterat före komplett',
-      insightBody: 'Den publika upplevelsen ska kännas redaktionell och självklar: välj kategori, läs de viktigaste frågorna, öppna raden och förstå vad problemet faktiskt är. Tyngre insamling, scoring och klustring ska ske bakom kulisserna.',
-      methodTitle: 'Hur vi prioriterar',
-      methodBody: 'Varje problem rankas efter severity, frekvens, whitespace, svensk relevans, tillit och sannolik adoption. Bara tio problem visas per kategori.',
-      missionTitle: 'Lös verkliga problem',
-      missionBody: 'Bygg där svenska människor, hushåll, företag och institutioner redan känner tydlig friktion.',
     },
     en: {
       title: 'ALL PROBLEMS',
+      top10Title: 'TOP 10 PROBLEMS',
+      top10Body: 'The ten highest-priority problems in the selected category — written as questions, with a short explanation behind each row.',
       sub: 'Filter on the left. Read the strongest problems on the right. Click + to expand a short explanation of what the problem actually is.',
       filterBy: 'Filter by',
       category: 'Category',
@@ -68,14 +65,8 @@ export function HomePage() {
       whyThisMatters: 'Why it matters',
       open: 'Open',
       close: 'Close',
-      insightTitle: 'Curated over complete',
-      insightBody: 'The public experience should feel editorial and obvious: choose a category, read the strongest questions, open a row, and understand what the problem actually is. Heavier collection, scoring and clustering should stay behind the curtain.',
-      methodTitle: 'How we prioritise',
-      methodBody: 'Each problem is ranked by severity, frequency, whitespace, Swedish relevance, trust and likely adoption. Only ten problems are shown per category.',
-      missionTitle: 'Solve real-world problems',
-      missionBody: 'Build where people, households, companies and institutions in Sweden already feel clear friction.',
     },
-  })[lang], [lang]);
+  }[lang];
 
   return (
     <main className="home-page">
@@ -91,10 +82,9 @@ export function HomePage() {
             </div>
 
             <div className="nav-links">
-              <a href="#problem-browser">{copy.navTop10}</a>
-              <a href="#insight">{copy.navInsight}</a>
-              <a href="#method">{copy.navMethod}</a>
-              <Link href="/architecture">{copy.navArchitecture}</Link>
+              <a href="#top-10-problems">{copy.navTop10}</a>
+              <a href="#all-problems">{copy.navAllProblems}</a>
+              <a href="#mission">{copy.navMission}</a>
             </div>
 
             <div className="nav-actions">
@@ -102,21 +92,20 @@ export function HomePage() {
                 <button className={lang === 'sv' ? 'active' : ''} onClick={() => setLang('sv')}>SV</button>
                 <button className={lang === 'en' ? 'active' : ''} onClick={() => setLang('en')}>EN</button>
               </div>
-              <Link className="btn ghost" href="/architecture">{copy.navArchBtn}</Link>
             </div>
           </nav>
         </div>
       </div>
 
-      <section className="problem-browser" id="problem-browser">
+      <section className="problem-browser" id="top-10-problems">
         <div className="container browser-wrap">
           <div className="browser-title-block">
             <div className="eyebrow"><span className="eyebrow-dot" />{copy.heroEyebrow}</div>
-            <h1>{chrome.title}</h1>
-            <p>{chrome.sub}</p>
+            <h1>{chrome.top10Title}</h1>
+            <p>{chrome.top10Body}</p>
           </div>
 
-          <div className="browser-grid">
+          <div className="browser-grid" id="all-problems">
             <aside className="filter-panel">
               <div className="filter-head">
                 <span className="filter-kicker">⌁ {chrome.filterBy}</span>
@@ -145,12 +134,12 @@ export function HomePage() {
             </aside>
 
             <section className="problem-panel">
-              <div className="table-headline">
+              <div className="browser-title-inline">
                 <div>
+                  <div className="eyebrow"><span className="eyebrow-dot" />{chrome.title}</div>
                   <h2>{categoryMeta.name}</h2>
                   <p>{categoryMeta.subtitle}</p>
                 </div>
-                <div className="code-pill">{copy.countLabel}</div>
               </div>
 
               <div className="problem-table">
@@ -227,35 +216,12 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="lower-band" id="insight">
-        <div className="container lower-grid">
-          <article className="info-card">
-            <span className="label">{copy.navInsight}</span>
-            <h3>{chrome.insightTitle}</h3>
-            <p>{chrome.insightBody}</p>
-          </article>
-          <article className="info-card accent" id="method">
-            <span className="label label-invert">{copy.navMethod}</span>
-            <h3>{chrome.methodTitle}</h3>
-            <p>{chrome.methodBody}</p>
-            <div className="method-score-grid">
-              {copy.methodScores.map(([title, body]) => (
-                <div className="method-score" key={title}>
-                  <strong>{title}</strong>
-                  <span>{body}</span>
-                </div>
-              ))}
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section className="mission-band">
+      <section className="mission-band" id="mission">
         <div className="container">
           <div className="mission-card">
             <span className="label">{copy.missionLabel}</span>
-            <h3>{chrome.missionTitle}</h3>
-            <p>{chrome.missionBody}</p>
+            <h3>{copy.missionTitle}</h3>
+            <p>{copy.missionBody}</p>
           </div>
         </div>
       </section>
@@ -263,7 +229,7 @@ export function HomePage() {
       <footer>
         <div className="container footer-row">
           <div>{copy.footerLeft}</div>
-          <div><Link href="/architecture">{copy.footerRight}</Link></div>
+          <div>{copy.footerRight}</div>
         </div>
       </footer>
     </main>

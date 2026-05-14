@@ -1,5 +1,5 @@
 const isProd = process.env.NODE_ENV === 'production';
-const repoName = 'fix-my-itch-sweden';
+const repoName = 'solve-real-world-problems-sweden';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {

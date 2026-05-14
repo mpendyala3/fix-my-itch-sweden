@@ -1,51 +1,37 @@
 export const ui = {
       sv: {
         brandName: 'Lös verkliga problem',
-        brandSub: 'Top 10 svenska problem per kategori',
-        navTop10: 'Top 10', navInsight: 'Insikt', navMethod: 'Metod', navArchitecture: 'Arkitektur', navArchBtn: 'Se arkitektur', navCta: 'Utforska problem',
+        brandSub: 'Sverige-först problem intelligence',
+        navTop10: 'Top 10 Problem',
+        navAllProblems: 'Alla problem',
+        navMission: 'Mission',
         heroEyebrow: 'Sverige-first founder intelligence',
-        heroTitle: 'Lös verkliga problem',
-        heroLead: 'Ett kuraterat, Sverige-först urval av de 10 viktigaste problemen inom varje kategori — byggt för grundare som vill börja med verklig friktion, inte slumpmässiga idéer.',
-        heroPrimary: 'Se Top 10', heroSecondary: 'Hur vi väljer', proof1: 'problem per kategori', proof2: 'kuraterade startkategorier', proof3: 'senast uppdaterad',
-        previewHeader: 'Veckans starkaste kategori', previewStatus: 'Hög signal', previewTitle: 'Småföretag & administration', previewBody: 'När svenska småföretag fastnar i fakturaflöden, redovisning, myndighetskontakt och manuella backoffice-steg skapas ett tydligt byggfönster.', previewNote: 'Inga oändliga listor. Bara de 10 starkaste problemen per kategori, med tydlig rangordning och founder-läsbar motivering.',
-        metric1: 'Högsta problemscore', metric2: 'Betalvilja', metric3: 'Adoption',
-        topTitle: 'Top 10 problem per kategori', topLead: 'Välj en kategori och se exakt 10 problem. Inte en gigantisk databas. Inte allt på en gång. Bara det mest byggvärda urvalet.',
-        insightLabel: 'Veckans insikt', insightTitle: 'Det bästa founder-materialet är nästan alltid kuraterat hårdare än det är insamlat.', insightBody1: 'Den publika upplevelsen ska kännas självklar: välj kategori, få de 10 viktigaste problemen, förstå varför de betyder något. Allt annat — större datamängder, klustring, scoring och källarbete — kan leva bakom kulisserna.', insightBody2: 'Det gör sajten renare, mer premium och mer trovärdig. Besökaren ska känna att någon redan gjort det svåra prioriteringsarbetet.', insightCta: 'Se metodiken',
-        methodLabel: 'Metod', methodTitle: 'Varför bara 10?', methodBody: 'För att knapphet signalerar omdöme. Varje kategori publicerar endast de 10 mest lovande problemen enligt severity, frekvens, whitespace, svensk relevans, tillit och sannolik adoption.',
-        missionLabel: 'Vårt uppdrag', missionTitle: 'Lös verkliga problem', missionBody: 'Vi vill göra det lättare att börja på rätt plats: där svenska människor, hushåll, företag och institutioner faktiskt känner friktion. Inte med en lista över allt — utan med ett koncentrerat urval av det som verkligen förtjänar att byggas kring.',
-        missionMini1: 'Sverige först', missionMini1Body: 'Lokalt språk, svenska system och kontext som faktiskt betyder något här.', missionMini2: 'Kuraterat över komplett', missionMini2Body: 'Den publika produkten visar bara de 10 viktigaste problemen per kategori.', missionMini3: 'Founder utility', missionMini3Body: 'Varje rad ska hjälpa någon prioritera vad som är värt att bygga.',
-        footerLeft: 'Lös verkliga problem — ombyggd som en kuraterad Top 10-upplevelse per kategori.', footerRight: 'Se arkitekturdiagrammet',
-        countLabel: '10 problem · kuraterat urval', rank: 'Rank', problemScore: 'Problemscore', market: 'Marknad', trust: 'Tillit',
-        methodScores: [
-          ['Severity', 'Hur dyrt, frustrerande eller riskfyllt problemet är.'],
-          ['Frequency', 'Hur ofta det återkommer i svensk vardag eller drift.'],
-          ['Whitespace', 'Hur dåligt dagens lösningar täcker behovet.'],
-          ['Lagom adoption', 'Hur realistiskt det är att folk faktiskt byter beteende.']
-        ]
+        missionLabel: 'Vårt uppdrag',
+        missionTitle: 'Lös verkliga problem',
+        missionBody: 'Vi vill göra det lättare att börja på rätt plats: där svenska människor, hushåll, företag och institutioner faktiskt känner friktion. Inte med en lista över allt — utan med ett koncentrerat urval av det som verkligen förtjänar att byggas kring.',
+        footerLeft: 'Lös verkliga problem — Top 10 per kategori, byggt för verklig efterfrågan.',
+        footerRight: 'Sverige-först problem intelligence',
+        rank: 'Rank',
+        problemScore: 'Problemscore',
+        market: 'Marknad',
+        trust: 'Tillit'
       },
       en: {
         brandName: 'Solve real-world problems',
-        brandSub: 'Top 10 real problems in Sweden by category',
-        navTop10: 'Top 10', navInsight: 'Insight', navMethod: 'Method', navArchitecture: 'Architecture', navArchBtn: 'See architecture', navCta: 'Explore problems',
+        brandSub: 'Sweden-first problem intelligence',
+        navTop10: 'Top 10 Problems',
+        navAllProblems: 'All Problems',
+        navMission: 'Mission',
         heroEyebrow: 'Sweden-first founder intelligence',
-        heroTitle: 'Solve real-world problems',
-        heroLead: 'A curated, Sweden-first selection of the 10 most important problems in each category — built for founders who want to start from real friction, not random ideas.',
-        heroPrimary: 'See the Top 10', heroSecondary: 'How we choose', proof1: 'problems per category', proof2: 'curated launch categories', proof3: 'last updated',
-        previewHeader: 'Strongest category this week', previewStatus: 'High signal', previewTitle: 'Small business admin overload', previewBody: 'When Swedish small businesses get stuck in invoicing, bookkeeping, agency contact and manual back-office steps, a clear build window appears.', previewNote: 'No endless lists. Just the strongest 10 problems in each category, ranked clearly and explained in founder-readable language.',
-        metric1: 'Top problem score', metric2: 'Willingness to pay', metric3: 'Adoption',
-        topTitle: 'Top 10 problems by category', topLead: 'Choose a category and see exactly 10 problems. Not a giant database. Not everything at once. Just the most build-worthy selection.',
-        insightLabel: 'Insight of the week', insightTitle: 'The best founder material is almost always curated harder than it is collected.', insightBody1: 'The public experience should feel obvious: choose a category, get the 10 most important problems, understand why they matter. Everything else — larger datasets, clustering, scoring and source work — can stay behind the curtain.', insightBody2: 'That makes the product cleaner, more premium and more credible. Visitors should feel that someone already did the hard prioritisation work.', insightCta: 'See the method',
-        methodLabel: 'Method', methodTitle: 'Why only 10?', methodBody: 'Because scarcity signals judgment. Each category publishes only the 10 most promising problems based on severity, recurrence, whitespace, Swedish relevance, trust and likely adoption.',
-        missionLabel: 'Our mission', missionTitle: 'Solve real-world problems', missionBody: 'We want to make it easier to start in the right place: where people, households, companies and institutions in Sweden actually feel friction. Not with a list of everything — but with a concentrated selection of what truly deserves to be built around.',
-        missionMini1: 'Sweden first', missionMini1Body: 'Local language, Swedish systems and context that actually matters here.', missionMini2: 'Curated over complete', missionMini2Body: 'The public product shows only the 10 most important problems in each category.', missionMini3: 'Founder utility', missionMini3Body: 'Every row should help someone decide what is worth building.',
-        footerLeft: 'Solve real-world problems — rebuilt as a curated Top 10 per category experience.', footerRight: 'See the architecture diagram',
-        countLabel: '10 problems · curated selection', rank: 'Rank', problemScore: 'Problem score', market: 'Market', trust: 'Trust',
-        methodScores: [
-          ['Severity', 'How expensive, painful or risky the problem feels.'],
-          ['Frequency', 'How often it recurs in Swedish life or operations.'],
-          ['Whitespace', 'How poorly current solutions cover the need.'],
-          ['Lagom adoption', 'How realistic it is that people would actually change behaviour.']
-        ]
+        missionLabel: 'Our mission',
+        missionTitle: 'Solve real-world problems',
+        missionBody: 'We want to make it easier to start in the right place: where people, households, companies and institutions in Sweden actually feel friction. Not with a list of everything — but with a concentrated selection of what truly deserves to be built around.',
+        footerLeft: 'Solve real-world problems — Top 10 per category, built for real demand.',
+        footerRight: 'Sweden-first problem intelligence',
+        rank: 'Rank',
+        problemScore: 'Problem score',
+        market: 'Market',
+        trust: 'Trust'
       }
     } as const;
 

@@ -168,23 +168,11 @@ nav {
   border-color: var(--text);
 }
 .problem-panel { padding: 18px 20px 10px; }
-.table-headline {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 16px;
+.browser-title-inline {
   margin-bottom: 16px;
 }
-.table-headline h2 { margin: 0 0 6px; font-size: 34px; font-weight: 300; }
-.table-headline p { margin: 0; color: var(--text-soft); font-size: 15px; }
-.code-pill {
-  border: 1px solid rgba(255,255,255,0.18);
-  border-radius: 999px;
-  color: var(--text-dim);
-  padding: 8px 12px;
-  font-size: 12px;
-  white-space: nowrap;
-}
+.browser-title-inline h2 { margin: 10px 0 6px; font-size: 34px; font-weight: 300; }
+.browser-title-inline p { margin: 0; color: var(--text-soft); font-size: 15px; }
 .problem-table-head,
 .problem-row-main {
   display: grid;
@@ -377,7 +365,7 @@ footer { padding: 14px 0 34px; }
 @media (max-width: 780px) {
   .container { padding: 0 16px; }
   .browser-title-block h1 { font-size: 58px; }
-  .table-headline { display: grid; }
+  .browser-title-inline { display: block; }
   .problem-table-head {
     grid-template-columns: minmax(0,1fr) 76px 90px 30px;
     gap: 10px;

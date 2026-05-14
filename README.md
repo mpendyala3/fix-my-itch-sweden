@@ -6,12 +6,13 @@ What this repo now contains:
 - Next.js App Router source in `app/`
 - static export config for GitHub Pages
 - `docs/` as the deployment artifact for Pages
-- a category-first homepage with exactly 10 problems per category
-- an `/architecture` route plus preserved legacy `architecture.html`
+- a category-first homepage with Top 10 Problems, All Problems, and Mission
+- an `/architecture` route for methodology transparency
 
-Core product rule:
-- only 10 public problems per category
-- no public all-problems library
+Core product structure:
+- Top 10 Problems
+- All Problems
+- Mission
 
 Commands:
 - `npm install`

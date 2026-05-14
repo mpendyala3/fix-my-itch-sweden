@@ -60,7 +60,6 @@ export default function ArchitecturePage() {
 
         <div className="architecture-actions">
           <Link className="btn ghost" href="/">Back to homepage</Link>
-          <a className="btn primary" href="/architecture.html">Open legacy diagram</a>
         </div>
       </div>
     </main>

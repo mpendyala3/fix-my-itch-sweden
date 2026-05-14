@@ -1,29 +1,26 @@
 # Solve real-world problems — foundation
 
 ## Product thesis
-A Sweden-wide problem discovery platform for founders: a structured, evidence-led map of recurring Swedish pain points worth solving.
+A Sweden-wide problem discovery platform for founders: a structured, evidence-led map of recurring Swedish problems worth solving.
 
 Primary promise:
 - Solve real-world problems.
 - Want to start building? Solve real-world problems.
 
 ## Core sections
-1. Insikter / Insights
-2. Topp 10 smärtpunkter / Top 10 pain points
-3. Bibliotek över smärtpunkter / Pain points library
-4. Vårt uppdrag / Our mission
+1. Top 10 Problems
+2. All Problems
+3. Mission
 
 ## Best-in-class quality bar
 1. Clear positioning in 5 seconds
-2. Strong methodology transparency
-3. Calm, premium Scandinavian visual language
-4. Searchable, filterable founder utility
-5. Trustworthy source presentation
-6. Fast, accessible, mobile-first performance
-7. Strong bilingual UX: Swedish primary, natural English secondary
-8. Distinction between evidence, interpretation, and opportunity
-9. Editorial clarity over startup hype
-10. Credible scoring with visible sub-scores and confidence
+2. Calm, premium Scandinavian visual language
+3. Searchable, filterable founder utility
+4. Trustworthy source presentation
+5. Fast, accessible, mobile-first performance
+6. Strong bilingual UX: Swedish primary, natural English secondary
+7. Editorial clarity over startup hype
+8. Credible scoring with visible sub-scores and confidence
 
 ## Product architecture
 - Source registry
@@ -31,7 +28,7 @@ Primary promise:
 - NLP enrichment and clustering
 - Scoring engine + confidence engine
 - Editorial review workflow
-- Public library + insights + top 10 experiences
+- Public Top 10 and category browsing experience
 
 ## Score framework
 1. Severity Score
@@ -47,7 +44,7 @@ Primary promise:
 11. Problem Score (composite)
 
 ## MVP recommendation
-- Start with 100–250 validated Swedish pain points
+- Start with 100–250 validated Swedish problems
 - Use semi-automated clustering plus manual editorial review
 - Prioritize legally safer and higher-signal public sources first
 - Publish confidence labels alongside scores
@@ -59,7 +56,3 @@ Tier 2: Trustpilot Sweden, Reco.se
 Tier 3: Reddit, Flashback, public X, public LinkedIn, permitted public groups/forums
 Tier 4: Breakit, Di Digital, relevant reports/surveys
 Tier 5: Interviews and Typeform surveys with consent
-
-## Prototype artifacts
-- architecture.html — system architecture diagram
-- prototype.html — clickable Swedish-first homepage prototype with EN toggle
