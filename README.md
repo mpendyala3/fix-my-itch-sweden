@@ -1,19 +1,21 @@
 # Fix My Itch Sweden
 
-Curated Sweden-first founder intelligence.
+Next.js version of the curated Sweden-first founder intelligence site.
 
-Public product principle:
-- only 10 problems per category
-- no public "all problems" library
-- category-first browsing
-- premium editorial presentation over data-dump UX
+What this repo now contains:
+- Next.js App Router source in `app/`
+- static export config for GitHub Pages
+- `docs/` as the deployment artifact for Pages
+- a category-first homepage with exactly 10 problems per category
+- an `/architecture` route plus preserved legacy `architecture.html`
 
-Current GitHub Pages release:
-- `index.html` — main homepage prototype
-- `prototype.html` — same prototype artifact
-- `architecture.html` — supporting system architecture
-- `PROJECT-BRIEF.md` — project framing
+Core product rule:
+- only 10 public problems per category
+- no public all-problems library
 
-Positioning:
-- Start where Sweden itches.
-- A curated, evidence-led Top 10 experience for each category.
+Commands:
+- `npm install`
+- `npm run dev`
+- `npm run build:pages`
+
+GitHub Pages serves from `docs/` on the `main` branch.
