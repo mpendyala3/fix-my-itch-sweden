@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fix My Itch Sverige — prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --paper: #fbfaf7;
+      --surface: rgba(255,255,255,.74);
+      --surface-strong: #ffffff;
+      --ink: #171717;
+      --muted: #5f6368;
+      --line: rgba(23,23,23,.10);
+      --line-strong: rgba(23,23,23,.16);
+      --blue: #234f7d;
+      --blue-soft: #dce7ef;
+      --forest: #406453;
+      --forest-soft: #dce7df;
+      --amber: #b5843f;
+      --amber-soft: #f2e7d4;
+      --rose-soft: #efe1de;
+      --shadow: 0 20px 60px rgba(17, 24, 39, 0.08);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --max: 1260px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(35,79,125,.06), transparent 28%),
+        radial-gradient(circle at top right, rgba(64,100,83,.05), transparent 26%),
+        linear-gradient(180deg, #f6f2eb 0%, #f4f1ea 40%, #f8f5ef 100%);
+      color: var(--ink);
+    }
+    a { color: inherit; text-decoration: none; }
+    .container { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+    .nav-wrap {
+      position: sticky; top: 0; z-index: 50; backdrop-filter: blur(16px);
+      background: rgba(248,245,239,.76); border-bottom: 1px solid rgba(23,23,23,.06);
+    }
+    nav {
+      display: flex; align-items: center; justify-content: space-between; gap: 18px; min-height: 78px;
+    }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .mark {
+      width: 42px; height: 42px; border-radius: 14px; background: linear-gradient(135deg, var(--blue), #4f7ba6);
+      color: #fff; display: grid; place-items: center; font-weight: 800; box-shadow: inset 0 1px 1px rgba(255,255,255,.2);
+    }
+    .brand-copy strong { display: block; font-size: 14px; }
+    .brand-copy span { display: block; font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .nav-links { display: flex; align-items: center; gap: 18px; font-size: 14px; color: var(--muted); }
+    .nav-links a:hover { color: var(--ink); }
+    .lang-toggle {
+      display: inline-flex; border: 1px solid var(--line); background: rgba(255,255,255,.78); border-radius: 999px; padding: 4px;
+    }
+    .lang-toggle button {
+      border: none; background: transparent; padding: 10px 14px; border-radius: 999px; font: inherit; cursor: pointer; color: var(--muted); font-weight: 600;
+    }
+    .lang-toggle button.active { background: var(--ink); color: #fff; }
+    .hero { padding: 56px 0 36px; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 10px; padding: 8px 12px; background: rgba(255,255,255,.68); border: 1px solid var(--line);
+      border-radius: 999px; font-size: 12px; color: var(--blue); font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    }
+    .eyebrow-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); }
+    .hero-grid {
+      margin-top: 24px; display: grid; grid-template-columns: 1.15fr .85fr; gap: 28px; align-items: stretch;
+    }
+    h1 {
+      font-size: clamp(38px, 7vw, 74px); line-height: .97; margin: 14px 0 18px; letter-spacing: -0.045em;
+    }
+    .lead { font-size: 18px; line-height: 1.7; color: #444b51; max-width: 760px; }
+    .cta-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 28px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px; padding: 15px 18px; border-radius: 999px; font-weight: 700; border: 1px solid transparent;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn.primary { background: var(--ink); color: #fff; }
+    .btn.secondary { background: rgba(255,255,255,.78); border-color: var(--line-strong); }
+    .proof-row {
+      display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin-top: 28px;
+    }
+    .proof-card, .panel, .metric-card, .score-card, .item-card, .library-card, .mission-card, .newsletter-card {
+      background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); border-radius: var(--radius-lg);
+    }
+    .proof-card { padding: 16px 18px; }
+    .proof-card strong { display: block; font-size: 22px; margin-bottom: 4px; }
+    .proof-card span { color: var(--muted); font-size: 13px; }
+    .hero-panel {
+      background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.76)); border: 1px solid rgba(23,23,23,.08);
+      box-shadow: var(--shadow); border-radius: var(--radius-xl); padding: 22px;
+    }
+    .mini-topbar {
+      display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 12px; margin-bottom: 16px;
+    }
+    .panel-title { font-size: 24px; margin: 0 0 8px; }
+    .panel-sub { color: var(--muted); line-height: 1.6; font-size: 14px; margin-bottom: 18px; }
+    .score-card {
+      background: var(--surface-strong); padding: 16px; margin-bottom: 12px; border-radius: 18px;
+    }
+    .score-top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+    .score-kicker { font-size: 12px; color: var(--blue); font-weight: 700; text-transform: uppercase; letter-spacing: .07em; }
+    .score-title { font-size: 18px; margin: 6px 0 6px; }
+    .score-body { color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 999px; font-size: 12px; font-weight: 700;
+      background: var(--blue-soft); color: var(--blue);
+    }
+    .score-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-top: 14px; }
+    .metric-card { padding: 12px; background: rgba(35,79,125,.03); }
+    .metric-card span { display: block; color: var(--muted); font-size: 12px; margin-bottom: 8px; }
+    .metric-card strong { display: block; font-size: 20px; }
+    section { padding: 32px 0; }
+    .section-head {
+      display: flex; justify-content: space-between; gap: 20px; align-items: end; margin-bottom: 20px;
+    }
+    .section-head h2 { font-size: clamp(28px, 4vw, 44px); margin: 0 0 8px; letter-spacing: -0.04em; }
+    .section-head p { margin: 0; color: var(--muted); max-width: 760px; line-height: 1.65; }
+    .signal-strip {
+      display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 12px;
+    }
+    .signal-item {
+      padding: 18px; border-radius: 18px; background: rgba(255,255,255,.66); border: 1px solid var(--line);
+    }
+    .signal-item strong { display: block; margin-bottom: 8px; font-size: 15px; }
+    .signal-item span { color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .filters { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 22px; }
+    .chip {
+      border: 1px solid var(--line); background: rgba(255,255,255,.72); border-radius: 999px; padding: 10px 14px; color: var(--muted); font-weight: 600; cursor: pointer;
+    }
+    .chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .top-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
+    .item-card { padding: 18px; background: rgba(255,255,255,.82); }
+    .item-card .rank { font-size: 12px; color: var(--blue); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+    .item-card h3 { font-size: 21px; margin: 10px 0 10px; letter-spacing: -0.03em; }
+    .item-card p { color: var(--muted); line-height: 1.65; margin: 0 0 14px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    .tag { padding: 7px 10px; border-radius: 999px; background: rgba(35,79,125,.08); color: var(--blue); font-size: 12px; font-weight: 700; }
+    .item-metrics { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-top: 8px; }
+    .item-metric { padding: 10px; border-radius: 14px; background: #f7f6f2; border: 1px solid rgba(23,23,23,.06); }
+    .item-metric span { display: block; color: var(--muted); font-size: 11px; margin-bottom: 6px; }
+    .item-metric strong { font-size: 17px; }
+    .feature-insight {
+      display: grid; grid-template-columns: 1fr 320px; gap: 18px;
+    }
+    .panel { padding: 22px; }
+    .panel .label { display: inline-block; padding: 8px 10px; border-radius: 999px; background: var(--forest-soft); color: var(--forest); font-size: 12px; font-weight: 700; }
+    .panel h3 { font-size: 29px; margin: 16px 0 12px; letter-spacing: -0.04em; }
+    .panel p { color: var(--muted); line-height: 1.75; margin: 0 0 18px; }
+    .side-metrics { display: grid; gap: 12px; }
+    .side-box {
+      border-radius: 18px; background: rgba(255,255,255,.82); border: 1px solid var(--line); padding: 16px;
+    }
+    .side-box span { display: block; color: var(--muted); font-size: 12px; margin-bottom: 8px; }
+    .side-box strong { font-size: 22px; display: block; }
+    .score-framework {
+      display: grid; grid-template-columns: 1.1fr .9fr; gap: 18px;
+    }
+    .framework-grid {
+      display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px;
+    }
+    .framework-item {
+      padding: 16px; border-radius: 18px; background: rgba(255,255,255,.82); border: 1px solid var(--line);
+    }
+    .framework-item strong { display: block; margin-bottom: 8px; }
+    .framework-item span { color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .library-toolbar {
+      display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 16px;
+    }
+    .search-box {
+      flex: 1 1 320px; display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-radius: 18px; background: rgba(255,255,255,.86); border: 1px solid var(--line);
+    }
+    .search-box input { flex: 1; border: none; background: transparent; font: inherit; outline: none; }
+    .dropdowns { display: flex; flex-wrap: wrap; gap: 10px; }
+    .dropdown {
+      padding: 12px 14px; background: rgba(255,255,255,.86); border: 1px solid var(--line); border-radius: 16px; color: var(--muted); font-size: 14px;
+    }
+    .library-grid {
+      display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px;
+    }
+    .library-card { padding: 18px; background: rgba(255,255,255,.84); }
+    .library-card .type { font-size: 12px; color: var(--forest); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+    .library-card h3 { margin: 10px 0; font-size: 20px; letter-spacing: -0.03em; }
+    .library-card p { margin: 0 0 14px; color: var(--muted); line-height: 1.65; }
+    .library-meta { display: flex; gap: 12px; flex-wrap: wrap; color: var(--muted); font-size: 12px; }
+    .mission-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+    }
+    .mission-card, .newsletter-card { padding: 24px; }
+    .mission-card h3, .newsletter-card h3 { font-size: 28px; margin: 0 0 14px; letter-spacing: -0.04em; }
+    .mission-card p, .newsletter-card p { color: var(--muted); line-height: 1.75; margin: 0 0 18px; }
+    .principles { display: grid; gap: 10px; }
+    .principle {
+      padding: 14px 16px; border-radius: 16px; background: rgba(35,79,125,.05); border: 1px solid rgba(35,79,125,.10);
+      display: flex; justify-content: space-between; gap: 14px;
+    }
+    .principle strong { font-size: 15px; }
+    .principle span { color: var(--muted); font-size: 13px; max-width: 280px; text-align: right; }
+    .newsletter-form {
+      display: grid; grid-template-columns: 1fr 210px auto; gap: 10px; margin-top: 16px;
+    }
+    .newsletter-form input, .newsletter-form select {
+      border: 1px solid var(--line); background: #fff; border-radius: 16px; padding: 14px 16px; font: inherit;
+    }
+    footer {
+      padding: 30px 0 40px; color: var(--muted); font-size: 13px;
+    }
+    .footer-row {
+      display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; padding-top: 14px; border-top: 1px solid rgba(23,23,23,.08);
+    }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 14px; }
+    @media (max-width: 1080px) {
+      .hero-grid, .feature-insight, .score-framework, .mission-grid { grid-template-columns: 1fr; }
+      .proof-row, .signal-strip, .top-grid, .library-grid, .newsletter-form { grid-template-columns: 1fr; }
+      .framework-grid, .item-metrics, .score-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 720px) {
+      .container { padding: 0 16px; }
+      .framework-grid, .item-metrics, .score-grid { grid-template-columns: 1fr; }
+      .section-head { display: block; }
+      .hero { padding-top: 34px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="nav-wrap">
+    <div class="container">
+      <nav>
+        <div class="brand">
+          <div class="mark">FI</div>
+          <div class="brand-copy">
+            <strong data-i18n="brandName">Fix My Itch Sverige</strong>
+            <span data-i18n="brandSub">En karta över svenska problem värda att lösa</span>
+          </div>
+        </div>
+        <div class="nav-links">
+          <a href="#insights" data-i18n="navInsights">Insikter</a>
+          <a href="#top10" data-i18n="navTop10">Topp 10</a>
+          <a href="#library" data-i18n="navLibrary">Bibliotek</a>
+          <a href="#mission" data-i18n="navMission">Vårt uppdrag</a>
+        </div>
+        <div class="lang-toggle" aria-label="Language toggle">
+          <button class="active" data-lang-btn="sv">SV</button>
+          <button data-lang-btn="en">EN</button>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="eyebrow"><span class="eyebrow-dot"></span><span data-i18n="heroEyebrow">Sverige-first founder intelligence</span></div>
+        <div class="hero-grid">
+          <div>
+            <h1 data-i18n="heroTitle">Sveriges viktigaste problem att bygga bolag kring.</h1>
+            <p class="lead" data-i18n="heroLead">Vi samlar återkommande problem i Sverige — från vardagstjänster och offentlig sektor till vård, boende, logistik och småföretagande — och översätter dem till tydliga möjlighetsområden för grundare.</p>
+            <div class="cta-row">
+              <a class="btn primary" href="#top10" data-i18n="heroPrimary">Utforska Topp 10</a>
+              <a class="btn secondary" href="#insights" data-i18n="heroSecondary">Läs senaste insikten</a>
+            </div>
+            <div class="proof-row">
+              <div class="proof-card">
+                <strong>124</strong>
+                <span data-i18n="proof1">kartlagda problem</span>
+              </div>
+              <div class="proof-card">
+                <strong>38</strong>
+                <span data-i18n="proof2">källor i första vågen</span>
+              </div>
+              <div class="proof-card">
+                <strong>Maj 2026</strong>
+                <span data-i18n="proof3">senast uppdaterad</span>
+              </div>
+            </div>
+          </div>
+          <aside class="hero-panel">
+            <div class="mini-topbar">
+              <span data-i18n="panelOverline">Dagens högsignal</span>
+              <span data-i18n="panelUpdated">Uppdaterad 14 maj</span>
+            </div>
+            <h2 class="panel-title" data-i18n="panelTitle">Administrationsbördan för småföretagare</h2>
+            <p class="panel-sub" data-i18n="panelSub">Små företag förlorar oproportionerligt mycket tid på fakturaflöden, regelkrav och myndighetskontakt — trots Sveriges starka digitala infrastruktur.</p>
+            <div class="score-card">
+              <div class="score-top">
+                <div>
+                  <div class="score-kicker" data-i18n="scoreKicker">Klåda Score</div>
+                  <div class="score-title">84 / 100</div>
+                </div>
+                <div class="badge" data-i18n="scoreConfidence">Hög datatrygghet</div>
+              </div>
+              <div class="score-body" data-i18n="scoreBody">Drivs av hög frekvens, tydlig betalningsvilja, synligt lösningsgap och växande frustration bland mikro-SME-segment.</div>
+              <div class="score-grid">
+                <div class="metric-card"><span data-i18n="metric1">Severity</span><strong>78</strong></div>
+                <div class="metric-card"><span data-i18n="metric2">Whitespace</span><strong>81</strong></div>
+                <div class="metric-card"><span data-i18n="metric3">Lagom Adoption</span><strong>73</strong></div>
+              </div>
+            </div>
+            <div class="score-card" style="margin-bottom:0;">
+              <div class="score-kicker" data-i18n="whyNow">Varför nu</div>
+              <div class="score-body" data-i18n="whyNowBody">Inflationstryck, högre administrativa krav, ökande fakturakomplexitet och fortsatt fragmenterade backoffice-flöden gör problemet mer akut än för tre år sedan.</div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2 data-i18n="signalTitle">Varför Sverige kliar just nu</h2>
+            <p data-i18n="signalLead">Bakom de enskilda problemen finns större strukturella drivkrafter — demografi, digital mognad, välfärdsfriktion, klimattryck och ökande krav på vardagens system.</p>
+          </div>
+        </div>
+        <div class="signal-strip">
+          <div class="signal-item"><strong data-i18n="signal1Title">Åldrande befolkning</strong><span data-i18n="signal1Body">Trycket ökar på vård, samordning, äldreomsorg och anhörigstöd.</span></div>
+          <div class="signal-item"><strong data-i18n="signal2Title">Småföretag under press</strong><span data-i18n="signal2Body">Administration, kostnader och regelverk skapar återkommande friktion.</span></div>
+          <div class="signal-item"><strong data-i18n="signal3Title">Boende och bostad</strong><span data-i18n="signal3Body">BRF-liv, boendekostnader, underhåll och beslut blir mer komplexa.</span></div>
+          <div class="signal-item"><strong data-i18n="signal4Title">Integration i praktiken</strong><span data-i18n="signal4Body">Många system är digitala, men inte alltid begripliga eller inkluderande.</span></div>
+          <div class="signal-item"><strong data-i18n="signal5Title">Klimat och säsong</strong><span data-i18n="signal5Body">Energi, vinterlogistik och vardagsresiliens påverkar hela landet.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="top10">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2 data-i18n="topTitle">Topp 10 svenska smärtpunkter</h2>
+            <p data-i18n="topLead">Rangordnade efter klåda, signalstyrka och founder-relevans. Filtrera mellan vardag, näringsliv, välfärd och klimatrelevanta problemområden.</p>
+          </div>
+        </div>
+        <div class="filters" id="filters"></div>
+        <div class="top-grid" id="topGrid"></div>
+      </div>
+    </section>
+
+    <section id="insights">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2 data-i18n="insightTitle">Senaste insikten</h2>
+            <p data-i18n="insightLead">En redaktionell analys som binder ihop samhällssignal, användarfrustration, betalningslogik och möjlig go-to-market.</p>
+          </div>
+        </div>
+        <div class="feature-insight">
+          <article class="panel">
+            <span class="label" data-i18n="insightLabel">Välfärd · Äldreomsorg</span>
+            <h3 data-i18n="insightHeadline">När anhöriga blir den osynliga integrationsytan mellan vård, kommun och familj</h3>
+            <p data-i18n="insightBody">Svenska familjer som hjälper äldre föräldrar tvingas ofta koordinera vårdkontakter, hemtjänst, ekonomi, medicinering och kommunal information i flera separata flöden. Problemet är emotionellt laddat, tidskrävande och dåligt löst av dagens verktyg.</p>
+            <a class="btn secondary" href="#library" data-i18n="insightCta">Se relaterade problem</a>
+          </article>
+          <div class="side-metrics">
+            <div class="side-box"><span data-i18n="side1">Founder takeaway</span><strong data-i18n="side1Value">Stort behov, men kräver hög tillit och tydlig betalare</strong></div>
+            <div class="side-box"><span data-i18n="side2">Mest drivande score</span><strong>Trygghet 89</strong></div>
+            <div class="side-box"><span data-i18n="side3">Källmix</span><strong data-i18n="side3Value">Forum, rapporter, klagomål, intervjuer</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2 data-i18n="frameworkTitle">Så vi bedömer om ett problem är värt att bygga kring</h2>
+            <p data-i18n="frameworkLead">Målet är inte att skapa en svart låda. Varje problem ska kunna förstås genom tydliga delsignaler: smärta, frekvens, lösningsgap, svensk relevans, samhällsfriktion och genomförbarhet.</p>
+          </div>
+        </div>
+        <div class="score-framework">
+          <div class="framework-grid" id="frameworkGrid"></div>
+          <aside class="panel">
+            <span class="label" data-i18n="methodLabel">Metodik</span>
+            <h3 data-i18n="methodHeadline">Transparens före hype</h3>
+            <p data-i18n="methodBody">Vi skiljer mellan råsignal, tolkning och founder-hypotes. Offentliga datakällor, klagomålsmönster, digitala diskussioner och intervjuer vägs samman, men varje publicerad smärtpunkt passerar en redaktionell kvalitetsgrind.</p>
+            <div class="tags">
+              <span class="tag">GDPR-aware</span>
+              <span class="tag">Human reviewed</span>
+              <span class="tag">Source transparent</span>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="library">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2 data-i18n="libraryTitle">Bibliotek över smärtpunkter</h2>
+            <p data-i18n="libraryLead">En växande samling av problem, signaler, founder-briefs och underanalyserade svenska friktionsytor.</p>
+          </div>
+        </div>
+        <div class="library-toolbar">
+          <div class="search-box">
+            <span>⌕</span>
+            <input type="text" placeholder="Sök efter problem, sektor, målgrupp…" data-i18n-placeholder="searchPlaceholder" />
+          </div>
+          <div class="dropdowns">
+            <div class="dropdown" data-i18n="drop1">Sektor: Alla</div>
+            <div class="dropdown" data-i18n="drop2">Datastyrka: Alla</div>
+            <div class="dropdown" data-i18n="drop3">Betalare: Alla</div>
+          </div>
+        </div>
+        <div class="library-grid" id="libraryGrid"></div>
+      </div>
+    </section>
+
+    <section id="mission">
+      <div class="container">
+        <div class="mission-grid">
+          <div class="mission-card">
+            <h3 data-i18n="missionTitle">Vårt uppdrag</h3>
+            <p data-i18n="missionBody">Det här är vår gåva till nästa generation grundare: en tydligare karta över svenska problem som faktiskt förtjänar att bli byggda på. Vi vill göra det lättare att se var Sverige kliar — och varför vissa problem är både kommersiellt intressanta och samhälleligt viktiga.</p>
+            <div class="principles">
+              <div class="principle"><strong data-i18n="principle1">Sverige först</strong><span data-i18n="principle1Body">Lokalt språk, lokala system och verkliga svenska sammanhang.</span></div>
+              <div class="principle"><strong data-i18n="principle2">Bevis före buzz</strong><span data-i18n="principle2Body">Källor, metodik och nykter tolkning ska synas.</span></div>
+              <div class="principle"><strong data-i18n="principle3">Grundarnytta</strong><span data-i18n="principle3Body">Varje sida ska hjälpa någon att prioritera vad som är värt att bygga.</span></div>
+            </div>
+          </div>
+          <div class="newsletter-card">
+            <h3 data-i18n="newsletterTitle">Få nya problemkartor varje månad</h3>
+            <p data-i18n="newsletterBody">En kort, faktabaserad sammanställning av nya svenska problemområden, marknadssignaler och founder takeaways.</p>
+            <div class="newsletter-form">
+              <input type="email" value="founder@company.se" aria-label="email" />
+              <select aria-label="role">
+                <option data-i18n="role1">Grundare</option>
+                <option data-i18n="role2">Investerare</option>
+                <option data-i18n="role3">Research</option>
+                <option data-i18n="role4">Offentlig sektor</option>
+              </select>
+              <button class="btn primary" type="button" data-i18n="newsletterCta">Prenumerera</button>
+            </div>
+            <p style="margin-top:14px;font-size:13px;" data-i18n="newsletterNote">Ingen spam. Bara nya insikter när de är värda att läsa.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-row">
+        <div data-i18n="footerLeft">Fix My Itch Sverige — prototype for architecture, tone and information design.</div>
+        <div class="footer-links">
+          <a href="#insights" data-i18n="footer1">Insikter</a>
+          <a href="#top10" data-i18n="footer2">Topp 10</a>
+          <a href="#library" data-i18n="footer3">Bibliotek</a>
+          <a href="#mission" data-i18n="footer4">Mission</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const copy = {
+      sv: {
+        brandName: 'Fix My Itch Sverige',
+        brandSub: 'En karta över svenska problem värda att lösa',
+        navInsights: 'Insikter', navTop10: 'Topp 10', navLibrary: 'Bibliotek', navMission: 'Vårt uppdrag',
+        heroEyebrow: 'Sverige-first founder intelligence',
+        heroTitle: 'Sveriges viktigaste problem att bygga bolag kring.',
+        heroLead: 'Vi samlar återkommande problem i Sverige — från vardagstjänster och offentlig sektor till vård, boende, logistik och småföretagande — och översätter dem till tydliga möjlighetsområden för grundare.',
+        heroPrimary: 'Utforska Topp 10', heroSecondary: 'Läs senaste insikten',
+        proof1: 'kartlagda problem', proof2: 'källor i första vågen', proof3: 'senast uppdaterad',
+        panelOverline: 'Dagens högsignal', panelUpdated: 'Uppdaterad 14 maj',
+        panelTitle: 'Administrationsbördan för småföretagare',
+        panelSub: 'Små företag förlorar oproportionerligt mycket tid på fakturaflöden, regelkrav och myndighetskontakt — trots Sveriges starka digitala infrastruktur.',
+        scoreKicker: 'Klåda Score', scoreConfidence: 'Hög datatrygghet',
+        scoreBody: 'Drivs av hög frekvens, tydlig betalningsvilja, synligt lösningsgap och växande frustration bland mikro-SME-segment.',
+        metric1: 'Severity', metric2: 'Whitespace', metric3: 'Lagom Adoption',
+        whyNow: 'Varför nu',
+        whyNowBody: 'Inflationstryck, högre administrativa krav, ökande fakturakomplexitet och fortsatt fragmenterade backoffice-flöden gör problemet mer akut än för tre år sedan.',
+        signalTitle: 'Varför Sverige kliar just nu',
+        signalLead: 'Bakom de enskilda problemen finns större strukturella drivkrafter — demografi, digital mognad, välfärdsfriktion, klimattryck och ökande krav på vardagens system.',
+        signal1Title: 'Åldrande befolkning', signal1Body: 'Trycket ökar på vård, samordning, äldreomsorg och anhörigstöd.',
+        signal2Title: 'Småföretag under press', signal2Body: 'Administration, kostnader och regelverk skapar återkommande friktion.',
+        signal3Title: 'Boende och bostad', signal3Body: 'BRF-liv, boendekostnader, underhåll och beslut blir mer komplexa.',
+        signal4Title: 'Integration i praktiken', signal4Body: 'Många system är digitala, men inte alltid begripliga eller inkluderande.',
+        signal5Title: 'Klimat och säsong', signal5Body: 'Energi, vinterlogistik och vardagsresiliens påverkar hela landet.',
+        topTitle: 'Topp 10 svenska smärtpunkter', topLead: 'Rangordnade efter klåda, signalstyrka och founder-relevans. Filtrera mellan vardag, näringsliv, välfärd och klimatrelevanta problemområden.',
+        insightTitle: 'Senaste insikten', insightLead: 'En redaktionell analys som binder ihop samhällssignal, användarfrustration, betalningslogik och möjlig go-to-market.',
+        insightLabel: 'Välfärd · Äldreomsorg',
+        insightHeadline: 'När anhöriga blir den osynliga integrationsytan mellan vård, kommun och familj',
+        insightBody: 'Svenska familjer som hjälper äldre föräldrar tvingas ofta koordinera vårdkontakter, hemtjänst, ekonomi, medicinering och kommunal information i flera separata flöden. Problemet är emotionellt laddat, tidskrävande och dåligt löst av dagens verktyg.',
+        insightCta: 'Se relaterade problem', side1: 'Founder takeaway', side1Value: 'Stort behov, men kräver hög tillit och tydlig betalare', side2: 'Mest drivande score', side3: 'Källmix', side3Value: 'Forum, rapporter, klagomål, intervjuer',
+        frameworkTitle: 'Så vi bedömer om ett problem är värt att bygga kring',
+        frameworkLead: 'Målet är inte att skapa en svart låda. Varje problem ska kunna förstås genom tydliga delsignaler: smärta, frekvens, lösningsgap, svensk relevans, samhällsfriktion och genomförbarhet.',
+        methodLabel: 'Metodik', methodHeadline: 'Transparens före hype', methodBody: 'Vi skiljer mellan råsignal, tolkning och founder-hypotes. Offentliga datakällor, klagomålsmönster, digitala diskussioner och intervjuer vägs samman, men varje publicerad smärtpunkt passerar en redaktionell kvalitetsgrind.',
+        libraryTitle: 'Bibliotek över smärtpunkter', libraryLead: 'En växande samling av problem, signaler, founder-briefs och underanalyserade svenska friktionsytor.',
+        searchPlaceholder: 'Sök efter problem, sektor, målgrupp…', drop1: 'Sektor: Alla', drop2: 'Datastyrka: Alla', drop3: 'Betalare: Alla',
+        missionTitle: 'Vårt uppdrag',
+        missionBody: 'Det här är vår gåva till nästa generation grundare: en tydligare karta över svenska problem som faktiskt förtjänar att bli byggda på. Vi vill göra det lättare att se var Sverige kliar — och varför vissa problem är både kommersiellt intressanta och samhälleligt viktiga.',
+        principle1: 'Sverige först', principle1Body: 'Lokalt språk, lokala system och verkliga svenska sammanhang.',
+        principle2: 'Bevis före buzz', principle2Body: 'Källor, metodik och nykter tolkning ska synas.',
+        principle3: 'Grundarnytta', principle3Body: 'Varje sida ska hjälpa någon att prioritera vad som är värt att bygga.',
+        newsletterTitle: 'Få nya problemkartor varje månad', newsletterBody: 'En kort, faktabaserad sammanställning av nya svenska problemområden, marknadssignaler och founder takeaways.',
+        role1: 'Grundare', role2: 'Investerare', role3: 'Research', role4: 'Offentlig sektor', newsletterCta: 'Prenumerera', newsletterNote: 'Ingen spam. Bara nya insikter när de är värda att läsa.',
+        footerLeft: 'Fix My Itch Sverige — prototype för arkitektur, tonalitet och informationsdesign.', footer1: 'Insikter', footer2: 'Topp 10', footer3: 'Bibliotek', footer4: 'Mission'
+      },
+      en: {
+        brandName: 'Fix My Itch Sweden',
+        brandSub: 'A map of real problems in Sweden worth building around',
+        navInsights: 'Insights', navTop10: 'Top 10', navLibrary: 'Library', navMission: 'Our mission',
+        heroEyebrow: 'Sweden-first founder intelligence',
+        heroTitle: 'The most important problems in Sweden to build around.',
+        heroLead: 'We collect recurring friction across life in Sweden — from everyday services and the public sector to healthcare, housing, logistics and small-business operations — and turn it into founder-readable opportunity spaces.',
+        heroPrimary: 'Explore the Top 10', heroSecondary: 'Read the latest insight',
+        proof1: 'mapped problems', proof2: 'sources in wave one', proof3: 'last updated',
+        panelOverline: 'Today’s strongest signal', panelUpdated: 'Updated 14 May',
+        panelTitle: 'The admin overload facing small businesses',
+        panelSub: 'Small companies lose disproportionate time to invoicing, compliance and agency coordination — despite Sweden’s strong digital infrastructure.',
+        scoreKicker: 'Itch Score', scoreConfidence: 'High trust signal',
+        scoreBody: 'Driven by high recurrence, clear budget-owner logic, visible solution gaps and rising frustration among micro-SMEs.',
+        metric1: 'Severity', metric2: 'Whitespace', metric3: 'Lagom adoption',
+        whyNow: 'Why now',
+        whyNowBody: 'Inflation pressure, tighter admin requirements, rising back-office complexity and fragmented workflows make this more urgent than it was three years ago.',
+        signalTitle: 'Why Sweden is itching right now',
+        signalLead: 'Behind each problem sits a broader structural force: demographics, digital maturity, welfare friction, climate pressure and rising complexity in everyday systems.',
+        signal1Title: 'An ageing population', signal1Body: 'More pressure on care, coordination, elder support and family logistics.',
+        signal2Title: 'Small firms under strain', signal2Body: 'Admin load, costs and regulation create recurring friction.',
+        signal3Title: 'Housing complexity', signal3Body: 'BRF life, costs, maintenance and decisions are getting harder to navigate.',
+        signal4Title: 'Integration in practice', signal4Body: 'Many systems are digital, but not always understandable or inclusive.',
+        signal5Title: 'Climate and seasonality', signal5Body: 'Energy, winter logistics and household resilience affect the whole country.',
+        topTitle: 'Top 10 pain points in Sweden', topLead: 'Ranked by itch, evidence strength and founder relevance. Filter across daily life, business operations, welfare and climate-linked categories.',
+        insightTitle: 'Latest insight', insightLead: 'An editorial analysis connecting societal signals, user frustration, payment logic and possible go-to-market paths.',
+        insightLabel: 'Welfare · Elder care',
+        insightHeadline: 'When family members become the invisible interface between care, municipalities and daily life',
+        insightBody: 'Families supporting ageing parents in Sweden often end up coordinating healthcare, home care, finances, medication and municipal communication across fragmented systems. The problem is emotionally intense, time-consuming and still poorly served by current tools.',
+        insightCta: 'See related pain points', side1: 'Founder takeaway', side1Value: 'Large need, but trust and payer clarity are essential', side2: 'Strongest score driver', side3: 'Evidence mix', side3Value: 'Forums, reports, complaints, interviews',
+        frameworkTitle: 'How we decide whether a problem is worth building around',
+        frameworkLead: 'The goal is not a black box. Each problem should be understandable through visible sub-signals: pain, recurrence, solution gap, Swedish fit, system friction and practical adoption readiness.',
+        methodLabel: 'Method', methodHeadline: 'Transparency before hype', methodBody: 'We separate raw signal, interpretation and founder hypothesis. Public datasets, complaint patterns, digital conversations and interviews are combined, but every published pain point goes through an editorial quality gate.',
+        libraryTitle: 'Pain point library', libraryLead: 'A growing collection of problem briefs, market signals, founder notes and under-explored areas of friction in Sweden.',
+        searchPlaceholder: 'Search by problem, sector, audience…', drop1: 'Sector: All', drop2: 'Evidence strength: All', drop3: 'Budget owner: All',
+        missionTitle: 'Our mission',
+        missionBody: 'This is our gift to the next generation of founders: a clearer map of Swedish problems that genuinely deserve to be built around. We want it to be easier to see where Sweden itches — and why some of those problems matter both commercially and socially.',
+        principle1: 'Sweden first', principle1Body: 'Local language, local systems and real Swedish context.',
+        principle2: 'Evidence before buzz', principle2Body: 'Sources, method and sober interpretation should be visible.',
+        principle3: 'Founder utility', principle3Body: 'Every page should help someone decide what is worth building.',
+        newsletterTitle: 'Get new Sweden problem maps every month', newsletterBody: 'A short, evidence-led digest of new pain areas, market signals and founder takeaways.',
+        role1: 'Founder', role2: 'Investor', role3: 'Research', role4: 'Public sector', newsletterCta: 'Subscribe', newsletterNote: 'No spam. Only new insights worth your time.',
+        footerLeft: 'Fix My Itch Sweden — prototype for architecture, tone and information design.', footer1: 'Insights', footer2: 'Top 10', footer3: 'Library', footer4: 'Mission'
+      }
+    };
+
+    const topItems = [
+      { id: 1, category: 'b2b', titleSv: 'Administrationsbördan för småföretagare', titleEn: 'The admin overload facing small businesses', descSv: 'Mikro- och småföretag lägger för mycket tid på fakturor, regelverk, löneflöden och myndighetskontakt.', descEn: 'Micro and small businesses spend too much time on invoicing, compliance, payroll workflows and agency coordination.', tagsSv: ['B2B Services', 'FinTech', 'SaaS'], tagsEn: ['B2B Services', 'FinTech', 'SaaS'], scores: { itch: 84, trygghet: 66, tam: 79 }, audienceSv: 'Småföretag, byråer', audienceEn: 'Small businesses, firms' },
+      { id: 2, category: 'welfare', titleSv: 'Samordning kring äldre föräldrar', titleEn: 'Coordination around ageing parents', descSv: 'Familjer måste agera operativt nav mellan vård, kommun, hemtjänst och privata aktörer.', descEn: 'Families become the operational layer between healthcare, municipalities, home care and private services.', tagsSv: ['Äldreomsorg', 'Healthtech', 'Välfärd'], tagsEn: ['Elder care', 'Healthtech', 'Welfare'], scores: { itch: 82, trygghet: 89, tam: 74 }, audienceSv: 'Anhöriga, kommuner', audienceEn: 'Families, municipalities' },
+      { id: 3, category: 'housing', titleSv: 'BRF-beslut och fastighetsunderhåll utan tydlig överblick', titleEn: 'BRF decision-making and property upkeep without clear visibility', descSv: 'Bostadsrättsföreningar saknar ofta bra verktyg för prioritering, ekonomi och kommunikation.', descEn: 'Housing associations often lack strong tools for prioritisation, finances and resident communication.', tagsSv: ['Housing & Bostadsrätt', 'Real Estate'], tagsEn: ['Housing & BRF', 'Real Estate'], scores: { itch: 80, trygghet: 77, tam: 72 }, audienceSv: 'BRF:er, förvaltare', audienceEn: 'Housing associations, managers' },
+      { id: 4, category: 'integration', titleSv: 'Att förstå svenska system som ny i landet', titleEn: 'Understanding Swedish systems as a newcomer', descSv: 'Många nyanlända navigerar BankID, myndigheter, skola och arbete genom splittrade informationskällor.', descEn: 'Many newcomers navigate BankID, agencies, school and work through fragmented information sources.', tagsSv: ['Integration', 'Public Sector'], tagsEn: ['Integration', 'Public Sector'], scores: { itch: 78, trygghet: 85, tam: 70 }, audienceSv: 'Nyanlända, stödaktörer', audienceEn: 'Newcomers, support organisations' },
+      { id: 5, category: 'climate', titleSv: 'Vinterberedskap i hemmet och vardagen', titleEn: 'Winter resilience at home and in daily life', descSv: 'Hushåll saknar samlade lösningar för energi, underhåll, trygghet och driftstörningar under kalla månader.', descEn: 'Households lack coherent tools for energy, maintenance, safety and disruptions during the cold season.', tagsSv: ['Cold Climate', 'GreenTech'], tagsEn: ['Cold Climate', 'GreenTech'], scores: { itch: 76, trygghet: 81, tam: 76 }, audienceSv: 'Hushåll, villaägare', audienceEn: 'Households, homeowners' },
+      { id: 6, category: 'mobility', titleSv: 'Sista kilometern utanför innerstaden', titleEn: 'Last-mile mobility outside dense urban cores', descSv: 'Många boende utanför centrala lägen saknar tillförlitlig mikromobilitet och lokala transportflöden.', descEn: 'Many people outside dense city centres lack reliable micromobility and local transport options.', tagsSv: ['Mobility', 'Logistics'], tagsEn: ['Mobility', 'Logistics'], scores: { itch: 73, trygghet: 62, tam: 68 }, audienceSv: 'Pendlare, kommuner', audienceEn: 'Commuters, municipalities' }
+    ];
+
+    const libraryItems = [
+      { typeSv: 'Problem brief', typeEn: 'Problem brief', titleSv: 'När betalningar fastnar mellan Swish, faktura och kommunal ersättning', titleEn: 'When payments get stuck between Swish, invoices and municipal reimbursements', bodySv: 'Ett växande problemområde i gränslandet mellan vård, omsorg och småskalig tjänsteleverans.', bodyEn: 'A growing friction area at the edge of care, reimbursement and small-scale service delivery.', metaSv: ['Payment Issues', 'Medium confidence', 'B2B2C'], metaEn: ['Payment Issues', 'Medium confidence', 'B2B2C'] },
+      { typeSv: 'Signal map', typeEn: 'Signal map', titleSv: 'Svenska vinterproblem med hög köpintention', titleEn: 'Winter pain points in Sweden with clear spending intent', bodySv: 'Energiförbrukning, snöröjning, underhåll och trygghet driver återkommande sökbeteende och forumaktivitet.', bodyEn: 'Energy use, snow handling, maintenance and safety create recurring search and forum demand.', metaSv: ['GreenTech', 'High confidence', 'Consumer'], metaEn: ['GreenTech', 'High confidence', 'Consumer'] },
+      { typeSv: 'Founder note', typeEn: 'Founder note', titleSv: 'Varför offentlig sektor kräver annan go-to-market än vanlig SaaS', titleEn: 'Why Swedish public sector demands a different go-to-market than classic SaaS', bodySv: 'Ett ramverk för att förstå procurement, tillit, policy och pilotlogik i svenska välfärdssystem.', bodyEn: 'A framework for understanding procurement, trust, policy and pilot dynamics in Swedish welfare systems.', metaSv: ['Public Sector', 'Editorial', 'Founders'], metaEn: ['Public Sector', 'Editorial', 'Founders'] }
+    ];
+
+    const scoreFramework = [
+      { sv: ['Severity Score', 'Hur intensivt och kostsamt problemet upplevs.'], en: ['Severity Score', 'How intense, stressful or costly the problem feels.'] },
+      { sv: ['Frequency Score', 'Hur ofta problemet återkommer i vardagen eller verksamheten.'], en: ['Frequency Score', 'How often the problem recurs in daily life or operations.'] },
+      { sv: ['Whitespace Score', 'Hur dåligt dagens lösningar matchar behovet.'], en: ['Whitespace Score', 'How poorly current solutions serve the need.'] },
+      { sv: ['TAM Score', 'Hur bred målgruppen och betalpotentialen är i Sverige.'], en: ['TAM Score', 'How broad the addressable market and payer base is in Sweden.'] },
+      { sv: ['Trygghet Score', 'Hur mycket tillit, trygghet eller riskminskning som står på spel.'], en: ['Trygghet Score', 'How much trust, safety or risk reduction is at stake.'] },
+      { sv: ['Sustainability Alignment', 'Hur nära problemet ligger energi, resiliens eller hållbar vardag.'], en: ['Sustainability Alignment', 'How strongly the problem connects to resilience, energy or sustainability.'] },
+      { sv: ['Välfärd Friction', 'Hur stark friktionen är mot offentliga system eller välfärdsflöden.'], en: ['Welfare Friction', 'How much friction the problem creates against public-service systems.'] },
+      { sv: ['Digital Infrastructure Readiness', 'Om Sverige redan har infrastruktur som gör lösningen möjlig att skala.'], en: ['Digital Infrastructure Readiness', 'Whether Sweden’s infrastructure makes the solution easier to deploy.'] },
+      { sv: ['Integration & Inclusion', 'Om problemet förstärker utanförskap eller språk-/systembarriärer.'], en: ['Integration & Inclusion', 'Whether the problem deepens exclusion or language/system barriers.'] },
+      { sv: ['Lagom Adoption', 'Hur sannolikt det är att en lösning kan införas utan att stöta bort användaren.'], en: ['Lagom Adoption', 'How likely adoption is without requiring unrealistic behaviour change.'] },
+      { sv: ['Klåda Score', 'En samlad möjlighetssignal för vad som är värt att bygga kring nu.'], en: ['Itch Score', 'A composite opportunity signal for what is worth building around now.'] }
+    ];
+
+    const filters = [
+      { id: 'all', sv: 'Alla', en: 'All' },
+      { id: 'b2b', sv: 'B2B', en: 'B2B' },
+      { id: 'welfare', sv: 'Välfärd', en: 'Welfare' },
+      { id: 'housing', sv: 'Boende', en: 'Housing' },
+      { id: 'integration', sv: 'Integration', en: 'Integration' },
+      { id: 'climate', sv: 'Klimat & säsong', en: 'Climate & seasonality' },
+      { id: 'mobility', sv: 'Mobilitet', en: 'Mobility' }
+    ];
+
+    let currentLang = 'sv';
+    let currentFilter = 'all';
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang === 'sv' ? 'sv' : 'en';
+      document.querySelectorAll('[data-lang-btn]').forEach(btn => btn.classList.toggle('active', btn.dataset.langBtn === lang));
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (copy[lang][key]) el.textContent = copy[lang][key];
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.dataset.i18nPlaceholder;
+        if (copy[lang][key]) el.setAttribute('placeholder', copy[lang][key]);
+      });
+      renderFilters();
+      renderTopItems();
+      renderLibrary();
+      renderFramework();
+    }
+
+    function renderFilters() {
+      const root = document.getElementById('filters');
+      root.innerHTML = filters.map(f => `
+        <button class="chip ${currentFilter === f.id ? 'active' : ''}" data-filter="${f.id}">${f[currentLang]}</button>
+      `).join('');
+      root.querySelectorAll('[data-filter]').forEach(btn => btn.addEventListener('click', () => {
+        currentFilter = btn.dataset.filter;
+        renderFilters();
+        renderTopItems();
+      }));
+    }
+
+    function renderTopItems() {
+      const grid = document.getElementById('topGrid');
+      const visible = currentFilter === 'all' ? topItems : topItems.filter(item => item.category === currentFilter);
+      grid.innerHTML = visible.map(item => `
+        <article class="item-card">
+          <div class="rank">#${item.id}</div>
+          <h3>${currentLang === 'sv' ? item.titleSv : item.titleEn}</h3>
+          <p>${currentLang === 'sv' ? item.descSv : item.descEn}</p>
+          <div class="tags">
+            ${(currentLang === 'sv' ? item.tagsSv : item.tagsEn).map(tag => `<span class="tag">${tag}</span>`).join('')}
+          </div>
+          <div class="item-metrics">
+            <div class="item-metric"><span>${currentLang === 'sv' ? 'Klåda' : 'Itch'}</span><strong>${item.scores.itch}</strong></div>
+            <div class="item-metric"><span>Trygghet</span><strong>${item.scores.trygghet}</strong></div>
+            <div class="item-metric"><span>TAM</span><strong>${item.scores.tam}</strong></div>
+          </div>
+          <div class="score-body" style="margin-top:12px;">${currentLang === 'sv' ? 'Påverkade grupper' : 'Affected groups'}: ${currentLang === 'sv' ? item.audienceSv : item.audienceEn}</div>
+        </article>
+      `).join('');
+    }
+
+    function renderLibrary() {
+      const grid = document.getElementById('libraryGrid');
+      grid.innerHTML = libraryItems.map(item => `
+        <article class="library-card">
+          <div class="type">${currentLang === 'sv' ? item.typeSv : item.typeEn}</div>
+          <h3>${currentLang === 'sv' ? item.titleSv : item.titleEn}</h3>
+          <p>${currentLang === 'sv' ? item.bodySv : item.bodyEn}</p>
+          <div class="library-meta">
+            ${(currentLang === 'sv' ? item.metaSv : item.metaEn).map(meta => `<span>${meta}</span>`).join('')}
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function renderFramework() {
+      const grid = document.getElementById('frameworkGrid');
+      grid.innerHTML = scoreFramework.map(item => `
+        <div class="framework-item">
+          <strong>${item[currentLang][0]}</strong>
+          <span>${item[currentLang][1]}</span>
+        </div>
+      `).join('');
+    }
+
+    document.querySelectorAll('[data-lang-btn]').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.langBtn)));
+    setLanguage('sv');
+  </script>
+</body>
+</html>
