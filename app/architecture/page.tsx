@@ -26,7 +26,7 @@ export default function ArchitecturePage() {
         <div className="architecture-header">
           <div>
             <div className="eyebrow dark"><span className="eyebrow-dot" />Architecture map</div>
-            <h1>Fix My Itch Sweden — how the platform works</h1>
+            <h1>Solve real-world problems — how the platform works</h1>
             <p className="architecture-sub">
               A Sweden-first intelligence system that collects public problem signals, applies compliance and editorial gates,
               scores founder-worthy opportunities, and publishes only the Top 10 problems for each category.

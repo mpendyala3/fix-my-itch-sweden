@@ -15,7 +15,7 @@ const sourceCode = Source_Code_Pro({
 });
 
 export const metadata: Metadata = {
-  title: 'Fix My Itch Sverige',
+  title: 'Lös verkliga problem',
   description: 'A curated Sweden-first Top 10 problem site for founders.',
 };
 

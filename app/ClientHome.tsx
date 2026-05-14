@@ -125,13 +125,13 @@ export function HomePage() {
                 <article className="problem-card" key={`${current}-${idx}`}>
                   <div className="problem-top">
                     <div className="rank">{copy.rank} #{idx + 1}</div>
-                    <div className="score-tags"><span className="score-tag">{copy.itch} {scores[0]}</span></div>
+                    <div className="score-tags"><span className="score-tag">{copy.problemScore} {scores[0]}</span></div>
                   </div>
                   <h4>{title}</h4>
                   <p>{desc}</p>
                   <div className="tag-row">{tags.map((tag) => <span className="tag" key={tag}>{tag}</span>)}</div>
                   <div className="problem-foot">
-                    <div className="mini-metric"><span>{copy.itch}</span><strong>{scores[0]}</strong></div>
+                    <div className="mini-metric"><span>{copy.problemScore}</span><strong>{scores[0]}</strong></div>
                     <div className="mini-metric"><span>{copy.market}</span><strong>{scores[1]}</strong></div>
                     <div className="mini-metric"><span>{copy.trust}</span><strong>{scores[2]}</strong></div>
                   </div>

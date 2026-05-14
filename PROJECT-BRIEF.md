@@ -1,11 +1,11 @@
-# Fix My Itch Sweden — foundation
+# Solve real-world problems — foundation
 
 ## Product thesis
 A Sweden-wide problem discovery platform for founders: a structured, evidence-led map of recurring Swedish pain points worth solving.
 
 Primary promise:
-- This is our gift to the next gen of founders to satisfy their itch and build what’s next.
-- Want to start building? Start where Sweden itches.
+- Solve real-world problems.
+- Want to start building? Solve real-world problems.
 
 ## Core sections
 1. Insikter / Insights
@@ -44,7 +44,7 @@ Primary promise:
 8. Digital Infrastructure Readiness
 9. Integration & Inclusion Score
 10. Lagom Adoption Score
-11. Klåda Score (composite)
+11. Problem Score (composite)
 
 ## MVP recommendation
 - Start with 100–250 validated Swedish pain points

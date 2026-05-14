@@ -1,4 +1,4 @@
-# Fix My Itch Sweden
+# Solve real-world problems
 
 Next.js version of the curated Sweden-first founder intelligence site.
 
