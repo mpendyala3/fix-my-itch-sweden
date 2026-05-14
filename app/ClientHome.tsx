@@ -3,29 +3,19 @@
 import { useState } from 'react';
 import { categories, categoryOrder, type CategoryId, type Language, ui } from './site-data';
 
-const subjects: Record<CategoryId, { sv: string; en: string }> = {
-  smb: { sv: 'svenska småföretag', en: 'Swedish small businesses' },
-  housing: { sv: 'boende och bostadsrättsföreningar', en: 'residents and housing associations' },
-  welfare: { sv: 'anhöriga och omsorgsteam', en: 'families and care teams' },
-  integration: { sv: 'människor som är nya i Sverige', en: 'people new to Sweden' },
-  climate: { sv: 'svenska hushåll', en: 'Swedish households' },
-  public: { sv: 'invånare och småföretag', en: 'residents and small businesses' },
-};
-
 function normalizeLower(text: string) {
   return text.charAt(0).toLowerCase() + text.slice(1).replace(/[?.!]$/, '');
 }
 
-function toQuestion(lang: Language, categoryId: CategoryId, title: string) {
+function toQuestion(lang: Language, title: string) {
   const base = normalizeLower(title);
-  const subject = subjects[categoryId][lang];
-  if (lang === 'sv') return `Varför fastnar ${subject} fortfarande i ${base}?`;
-  return `Why do ${subject} still struggle with ${base}?`;
+  if (lang === 'sv') return `Varför är ${base} fortfarande ett verkligt problem i Sverige?`;
+  return `Why is ${base} still a real problem in Sweden?`;
 }
 
 export function HomePage() {
   const [lang, setLang] = useState<Language>('sv');
-  const [current, setCurrent] = useState<CategoryId>('smb');
+  const [current, setCurrent] = useState<CategoryId>(categoryOrder[0]);
   const [expanded, setExpanded] = useState(0);
 
   const copy = ui[lang];
@@ -155,7 +145,7 @@ export function HomePage() {
                     const data = item[lang];
                     const [title, desc, tags, scores] = data;
                     const isOpen = expanded === idx;
-                    const headline = toQuestion(lang, current, title);
+                    const headline = toQuestion(lang, title);
                     return (
                       <article className={`problem-row ${isOpen ? 'open' : ''}`} key={`${current}-${idx}`}>
                         <div className="problem-row-main">
