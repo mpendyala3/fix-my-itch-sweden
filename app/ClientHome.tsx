@@ -548,7 +548,19 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
         <div className="container">
           <nav aria-label="Primary">
             <a className="brand" href="#home">
-              <div className="brand-mark">SE</div>
+              <div className="brand-mark" aria-hidden="true">
+                <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="32" cy="32" r="30" className="brand-orbit" />
+                  <path
+                    d="M20 38C22.8 29.6 29 24 36.5 24C41.8 24 46.5 26.6 50 31"
+                    className="brand-path"
+                  />
+                  <path d="M15 44C20.5 47.5 26.5 49.5 33 49.5C40 49.5 46 47 51 42" className="brand-path faint" />
+                  <circle cx="18" cy="44" r="4.5" className="brand-node solid" />
+                  <circle cx="36.5" cy="24" r="4" className="brand-node" />
+                  <circle cx="50" cy="31" r="4.5" className="brand-node solid" />
+                </svg>
+              </div>
               <div className="brand-copy">
                 <strong>{text.brandName}</strong>
                 <span>{text.brandSub}</span>
