@@ -626,15 +626,19 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
             <a className="brand" href="#home">
               <div className="brand-mark" aria-hidden="true">
                 <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="32" cy="32" r="30" className="brand-orbit" />
+                  <circle cx="32" cy="32" r="28" className="brand-ring" />
                   <path
-                    d="M20 38C22.8 29.6 29 24 36.5 24C41.8 24 46.5 26.6 50 31"
-                    className="brand-path"
+                    d="M24 26.5C24 21.8 27.7 18 32.2 18C36.7 18 40.4 21.8 40.4 26.5C40.4 29.5 39 32 36.8 34.2C35.4 35.6 34.8 36.8 34.8 38.3H29.6C29.6 36.7 29 35.5 27.6 34.1C25.4 31.9 24 29.4 24 26.5Z"
+                    className="brand-bulb"
                   />
-                  <path d="M15 44C20.5 47.5 26.5 49.5 33 49.5C40 49.5 46 47 51 42" className="brand-path faint" />
-                  <circle cx="18" cy="44" r="4.5" className="brand-node solid" />
-                  <circle cx="36.5" cy="24" r="4" className="brand-node" />
-                  <circle cx="50" cy="31" r="4.5" className="brand-node solid" />
+                  <path d="M28.8 41.2H35.6" className="brand-detail" />
+                  <path d="M29.8 45H34.6" className="brand-detail" />
+                  <path d="M29.2 24.7C30.1 23.6 31.4 23 32.8 23C34.4 23 35.7 23.8 36.5 25" className="brand-detail" />
+                  <path d="M28.8 28.4C29.7 27.3 31 26.7 32.4 26.7C33.8 26.7 35 27.3 35.9 28.4" className="brand-detail faint" />
+                  <path d="M42.5 20.5L47.5 15.5" className="brand-detail" />
+                  <path d="M46.4 15.5H47.5V16.6" className="brand-detail" />
+                  <circle cx="45.5" cy="41.5" r="6.5" className="brand-coin" />
+                  <path d="M42.8 41.5L44.7 43.4L48.3 39.8" className="brand-coin-mark" />
                 </svg>
               </div>
               <div className="brand-copy">
@@ -872,7 +876,20 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                       const isOpen = expanded === idx;
                       return (
                         <article className={`problem-row ${isOpen ? 'open' : ''}`} key={`${current}-${idx}`}>
-                            <div className="problem-row-main">
+                            <div
+                              className="problem-row-main"
+                              role="button"
+                              tabIndex={0}
+                              aria-expanded={isOpen}
+                              aria-label={isOpen ? text.close : text.open}
+                              onClick={() => setExpanded(isOpen ? -1 : idx)}
+                              onKeyDown={(event) => {
+                                if (event.key === 'Enter' || event.key === ' ') {
+                                  event.preventDefault();
+                                  setExpanded(isOpen ? -1 : idx);
+                                }
+                              }}
+                            >
                               <div className="problem-question-block">
                                 <h4>{item.title}</h4>
                               </div>

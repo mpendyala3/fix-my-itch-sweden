@@ -130,31 +130,37 @@ nav {
   display: block;
 }
 
-.brand-orbit {
-  stroke: color-mix(in srgb, var(--text) 24%, transparent);
-  stroke-width: 1.5;
+.brand-ring {
+  stroke: var(--text);
+  stroke-width: 1.75;
 }
 
-.brand-path {
-  stroke: color-mix(in srgb, var(--text) 82%, transparent);
-  stroke-width: 2.4;
-  stroke-linecap: round;
+.brand-bulb {
+  fill: var(--text);
 }
 
-.brand-path.faint {
-  stroke: color-mix(in srgb, var(--text-dim) 60%, transparent);
+.brand-detail {
+  stroke: var(--bg);
   stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.brand-node {
-  fill: color-mix(in srgb, var(--bg) 65%, var(--text) 35%);
-  stroke: color-mix(in srgb, var(--text) 72%, transparent);
-  stroke-width: 1.5;
+.brand-detail.faint {
+  opacity: 0.78;
 }
 
-.brand-node.solid {
-  fill: color-mix(in srgb, white 88%, #d6e4ff 12%);
-  stroke: none;
+.brand-coin {
+  fill: var(--bg);
+  stroke: var(--text);
+  stroke-width: 1.75;
+}
+
+.brand-coin-mark {
+  stroke: var(--text);
+  stroke-width: 2.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .brand-copy strong {
@@ -866,6 +872,7 @@ nav {
 
 .problem-row-main {
   padding-block: 1.125rem;
+  cursor: pointer;
 }
 
 .problem-question-block {
