@@ -147,8 +147,8 @@ const copy = {
       { icon: 'person', value: 'from 50k people', label: 'and counting' },
       { icon: 'spark', value: 'AI-powered', label: 'curation' },
     ] satisfies readonly HeroSignal[],
-    heroPrimary: 'Show me top problems',
-    heroSecondary: 'Browse all categories',
+    heroPrimary: 'Show Me Top Pain Points',
+    heroSecondary: 'Browse All Categories',
     proofLabel: 'What you are looking at',
     proofItems: [
       ['20', 'curated categories'],
