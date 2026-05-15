@@ -876,7 +876,7 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                               <div className="problem-question-block">
                                 <h4>{item.title}</h4>
                               </div>
-                              <div className="problem-score">{item.scores.score}/100</div>
+                              <div className="problem-score">{item.scores.score}</div>
                               <div className="problem-industry">{categoryMeta.name}</div>
                               <button
                                 className="expand-btn"
