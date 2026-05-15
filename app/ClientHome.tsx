@@ -460,7 +460,7 @@ function pageSchema(lang: Language) {
 export function HomePage({ routeLabel }: { routeLabel?: string }) {
   const [lang, setLang] = useState<Language>('en');
   const [current, setCurrent] = useState<CategoryId>(categoryOrder[0]);
-  const [expanded, setExpanded] = useState(0);
+  const [expanded, setExpanded] = useState(-1);
   const [query, setQuery] = useState('');
   const [activeTopCard, setActiveTopCard] = useState(0);
   const categoryButtonRefs = useRef<Partial<Record<CategoryId, HTMLButtonElement | null>>>({});
@@ -753,7 +753,7 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                         }}
                         onClick={() => {
                           setCurrent(id);
-                          setExpanded(0);
+                          setExpanded(-1);
                         }}
                         role="tab"
                         aria-selected={active}
