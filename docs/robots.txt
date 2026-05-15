@@ -1,0 +1,7 @@
+User-Agent: *
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+
+Host: https://mpendyala3.github.io/solve-real-world-problems-sweden
+Sitemap: https://mpendyala3.github.io/solve-real-world-problems-sweden/sitemap.xml
