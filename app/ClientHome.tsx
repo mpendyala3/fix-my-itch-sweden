@@ -512,7 +512,6 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                 {text.insightsLabel}
               </div>
               <h2>{text.insightsTitle}</h2>
-              <p>{text.insightsBody}</p>
             </div>
 
             <div className="insight-grid">
@@ -532,7 +531,7 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                     ))}
                   </div>
                   <button className="inline-link" type="button" onClick={() => setCurrent(id)}>
-                    {text.featuredLabel}: {categoryName}
+                    {categoryName}
                   </button>
                 </article>
               ))}
@@ -785,24 +784,6 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
           </div>
         </section>
 
-        <section className="method-section" id="method">
-          <div className="container method-grid">
-            <div className="method-copy">
-              <span className="label">{text.methodLabel}</span>
-              <h2>{text.methodTitle}</h2>
-              <p>{text.methodBody}</p>
-            </div>
-            <div className="method-cards">
-              {text.methodCards.map(([title, body]) => (
-                <article className="method-card" key={title}>
-                  <strong>{title}</strong>
-                  <p>{body}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
         <section className="mission-band" id="mission">
           <div className="container mission-grid">
             <article className="mission-card">
@@ -810,17 +791,6 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
               <h2>{text.missionTitle}</h2>
               <p>{text.missionBody}</p>
             </article>
-
-            <aside className="cta-card">
-              <span className="label">{text.ctaLabel}</span>
-              <h2>{text.ctaTitle}</h2>
-              <p>{text.ctaBody}</p>
-              <div className="hero-actions compact">
-                <a className="btn primary" href="#all-problems">
-                  {text.heroSecondary}
-                </a>
-              </div>
-            </aside>
           </div>
         </section>
 
