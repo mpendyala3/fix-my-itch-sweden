@@ -501,21 +501,6 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
               </div>
             </div>
 
-            <aside className="hero-side" aria-label="Summary information">
-              <div className="hero-note-card">
-                <span className="mini-kicker">Sweden-first</span>
-                <p>
-                  {lang === 'sv'
-                    ? 'Mer kuraterad founder intelligence. Mindre ton av allmän frustration.'
-                    : 'More curated founder intelligence. Less generic complaint energy.'}
-                </p>
-                {routeLabel ? (
-                  <p className="route-badge">
-                    <strong>{text.routeLabel}:</strong> {routeLabel}
-                  </p>
-                ) : null}
-              </div>
-            </aside>
           </div>
         </section>
 
