@@ -559,6 +559,10 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
   const category = categories[current];
   const categoryMeta = category[lang];
   const categoryItems = category.items.map((item) => presentProblem(lang, item[lang]));
+  const categoryRows = [
+    categoryOrder.filter((_, idx) => idx % 2 === 0),
+    categoryOrder.filter((_, idx) => idx % 2 === 1),
+  ];
 
   const topProblemCards = useMemo<TopProblemCard[]>(
     () =>
@@ -801,30 +805,34 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                 </div>
 
                 <div className="filter-list" role="tablist" aria-label={text.categoryLabel}>
-                  {categoryOrder.map((id) => {
-                    const active = id === current;
-                    return (
-                      <button
-                        key={id}
-                        className={`filter-option ${active ? 'active' : ''}`}
-                        ref={(node) => {
-                          categoryButtonRefs.current[id] = node;
-                        }}
-                        onClick={() => {
-                          setCurrent(id);
-                          setExpanded(-1);
-                        }}
-                        role="tab"
-                        aria-selected={active}
-                        type="button"
-                      >
-                        <span className="check-box" aria-hidden="true">
-                          {active ? '✓' : ''}
-                        </span>
-                        <span>{categories[id][lang].name}</span>
-                      </button>
-                    );
-                  })}
+                  {categoryRows.map((row, rowIdx) => (
+                    <div className="filter-row" key={`row-${rowIdx}`}>
+                      {row.map((id) => {
+                        const active = id === current;
+                        return (
+                          <button
+                            key={id}
+                            className={`filter-option ${active ? 'active' : ''}`}
+                            ref={(node) => {
+                              categoryButtonRefs.current[id] = node;
+                            }}
+                            onClick={() => {
+                              setCurrent(id);
+                              setExpanded(-1);
+                            }}
+                            role="tab"
+                            aria-selected={active}
+                            type="button"
+                          >
+                            <span className="check-box" aria-hidden="true">
+                              {active ? '✓' : ''}
+                            </span>
+                            <span>{categories[id][lang].name}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ))}
                 </div>
               </aside>
 
