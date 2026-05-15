@@ -637,7 +637,7 @@ nav {
 
 .top-problem-card h3 {
   margin: 1rem 0 0;
-  font-size: clamp(1.85rem, 7vw, 2.7rem);
+  font-size: clamp(1.76rem, 6.65vw, 2.56rem);
   line-height: 0.96;
   font-weight: 400;
 }
@@ -873,7 +873,7 @@ nav {
 }
 
 .problem-question-block h4 {
-  font-size: clamp(1.2rem, 2.1vw, 1.8rem);
+  font-size: clamp(1.14rem, 2vw, 1.71rem);
   line-height: 1.08;
 }
 
@@ -1279,7 +1279,7 @@ footer {
   }
 
   .problem-question-block h4 {
-    font-size: 1.18rem;
+    font-size: 1.12rem;
   }
 
   .problem-score {
