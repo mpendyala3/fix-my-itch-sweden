@@ -625,21 +625,7 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
           <nav aria-label="Primary">
             <a className="brand" href="#home" aria-label={text.brandName}>
               <div className="brand-mark" aria-hidden="true">
-                <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="32" cy="32" r="28" className="brand-ring" />
-                  <path
-                    d="M24 26.5C24 21.8 27.7 18 32.2 18C36.7 18 40.4 21.8 40.4 26.5C40.4 29.5 39 32 36.8 34.2C35.4 35.6 34.8 36.8 34.8 38.3H29.6C29.6 36.7 29 35.5 27.6 34.1C25.4 31.9 24 29.4 24 26.5Z"
-                    className="brand-bulb"
-                  />
-                  <path d="M28.8 41.2H35.6" className="brand-detail" />
-                  <path d="M29.8 45H34.6" className="brand-detail" />
-                  <path d="M29.2 24.7C30.1 23.6 31.4 23 32.8 23C34.4 23 35.7 23.8 36.5 25" className="brand-detail" />
-                  <path d="M28.8 28.4C29.7 27.3 31 26.7 32.4 26.7C33.8 26.7 35 27.3 35.9 28.4" className="brand-detail faint" />
-                  <path d="M42.5 20.5L47.5 15.5" className="brand-detail" />
-                  <path d="M46.4 15.5H47.5V16.6" className="brand-detail" />
-                  <circle cx="45.5" cy="41.5" r="6.5" className="brand-coin" />
-                  <path d="M42.8 41.5L44.7 43.4L48.3 39.8" className="brand-coin-mark" />
-                </svg>
+                <img src="/site-logo.jpg" alt="" />
               </div>
             </a>
 
