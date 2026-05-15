@@ -944,7 +944,16 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
               <div className="footer-links">
                 <Link href="/privacy/">{text.privacyLink}</Link>
                 <Link href="/terms/">{text.termsLink}</Link>
-                <a href="#home">{text.backToTop}</a>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (typeof window === 'undefined') return;
+                    window.history.replaceState(null, '', '#home');
+                    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+                  }}
+                >
+                  {text.backToTop}
+                </button>
               </div>
             </nav>
           </div>
