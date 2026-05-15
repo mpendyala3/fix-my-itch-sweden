@@ -98,7 +98,7 @@ const copy = {
     missionLabel: 'Vårt uppdrag',
     missionTitle: 'Börja där Sverige faktiskt behöver bättre lösningar',
     missionBody:
-      'Målet är inte att lista allt som är fel. Målet är att synliggöra återkommande problem som är verkliga, relevanta och värda att bygga kring — med en ton som fungerar i Sverige och inger förtroende.',
+      'Målet är inte att lista allt som är fel. Målet är att synliggöra återkommande problem som är verkliga, relevanta och värda att bygga kring.',
     ctaLabel: 'Nästa steg',
     ctaTitle: 'Bygg runt verklig efterfrågan',
     ctaBody:
@@ -192,7 +192,7 @@ const copy = {
     missionLabel: 'Our mission',
     missionTitle: 'Start where Sweden genuinely needs better solutions',
     missionBody:
-      'The goal is not to list everything that is wrong. The goal is to surface recurring problems that are real, relevant, and worth building around — in a tone that fits Sweden and earns trust.',
+      'The goal is not to list everything that is wrong. The goal is to surface recurring problems that are real, relevant, and worth building around.',
     ctaLabel: 'Next move',
     ctaTitle: 'Build around real demand',
     ctaBody:
