@@ -1,28 +1,41 @@
 import type { Metadata } from 'next';
-import { Source_Code_Pro, Source_Sans_3 } from 'next/font/google';
+import { Bebas_Neue, Inter, Source_Code_Pro } from 'next/font/google';
 import './globals.css';
 
-const sourceSans = Source_Sans_3({
+const sans = Inter({
   subsets: ['latin'],
-  weight: ['300', '400', '600'],
   variable: '--font-sans',
+  display: 'swap',
 });
 
-const sourceCode = Source_Code_Pro({
+const display = Bebas_Neue({
   subsets: ['latin'],
-  weight: ['400', '500'],
+  weight: '400',
+  variable: '--font-display',
+  display: 'swap',
+});
+
+const mono = Source_Code_Pro({
+  subsets: ['latin'],
+  weight: ['400', '600'],
   variable: '--font-mono',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: 'Lös verkliga problem',
-  description: 'A curated Sweden-first Top 10 problem site for founders.',
+  title: 'Lös verkliga problem | Solve real-world problems',
+  description:
+    'A Sweden-first, bilingual catalogue of real recurring problems worth building around — presented as curated opportunity intelligence rather than complaint-driven noise.',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <html lang="sv">
-      <body className={`${sourceSans.variable} ${sourceCode.variable}`}>{children}</body>
+    <html lang="en">
+      <body className={`${sans.variable} ${display.variable} ${mono.variable}`}>{children}</body>
     </html>
   );
 }
