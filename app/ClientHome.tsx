@@ -887,7 +887,6 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                             {isOpen ? (
                               <div className="problem-expand">
                                 <div className="expand-copy">
-                                  <span className="expand-label">{text.explanation}</span>
                                   <p>{item.description}</p>
                                 </div>
                                 <div className="expand-meta">
