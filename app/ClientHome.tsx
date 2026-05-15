@@ -690,10 +690,6 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
         <section className="top-problems-section" id="top-10-problems">
           <div className="container top-problems-wrap">
             <div className="section-head top-problems-head">
-              <div className="eyebrow">
-                <span className="eyebrow-dot" />
-                {text.swipeEyebrow}
-              </div>
               <h2>{text.swipeTitle}</h2>
               <p>{text.swipeBody}</p>
             </div>
@@ -835,10 +831,6 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
               <section className="problem-panel" aria-label={categoryMeta.name}>
                 <div className="browser-title-inline">
                   <div>
-                    <div className="eyebrow">
-                      <span className="eyebrow-dot" />
-                      {text.allProblemsLabel}
-                    </div>
                     <h3>{categoryMeta.name}</h3>
                     <p>{categoryMeta.subtitle}</p>
                   </div>
