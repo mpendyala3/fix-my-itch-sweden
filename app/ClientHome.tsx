@@ -29,6 +29,12 @@ type TopProblemCard = {
   question: string;
 };
 
+type HeroSignal = {
+  icon: 'check' | 'person' | 'spark';
+  value: string;
+  label: string;
+};
+
 const copy = {
   sv: {
     brandName: 'Lös verkliga problem',
@@ -43,6 +49,11 @@ const copy = {
     heroEyebrow: '',
     heroTitle: 'Lös verkliga problem',
     heroBody: '',
+    heroSignals: [
+      { icon: 'check', value: '10 000+', label: 'verifierade problem' },
+      { icon: 'person', value: 'från 50k personer', label: 'och växer' },
+      { icon: 'spark', value: 'AI-driven', label: 'kuratering' },
+    ] satisfies readonly HeroSignal[],
     heroPrimary: 'Visa mig top problems',
     heroSecondary: 'Bläddra i alla kategorier',
     proofLabel: 'Vad du tittar på',
@@ -131,6 +142,11 @@ const copy = {
     heroEyebrow: '',
     heroTitle: 'Solve real-world problems',
     heroBody: '',
+    heroSignals: [
+      { icon: 'check', value: '10,000+', label: 'verified problems' },
+      { icon: 'person', value: 'from 50k people', label: 'and counting' },
+      { icon: 'spark', value: 'AI-powered', label: 'curation' },
+    ] satisfies readonly HeroSignal[],
     heroPrimary: 'Show me top problems',
     heroSecondary: 'Browse all categories',
     proofLabel: 'What you are looking at',
@@ -489,6 +505,34 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
   }, [current]);
 
   const text = copy[lang];
+  const renderHeroSignalIcon = (icon: HeroSignal['icon']) => {
+    if (icon === 'check') {
+      return (
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="24" r="19" />
+          <path d="M15.5 24.5L22 31L33 18.5" />
+        </svg>
+      );
+    }
+
+    if (icon === 'person') {
+      return (
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="17" r="6.5" />
+          <path d="M14.5 35.5C14.5 28.9 18.75 25.5 24 25.5C29.25 25.5 33.5 28.9 33.5 35.5" />
+          <circle cx="24" cy="24" r="19" />
+        </svg>
+      );
+    }
+
+    return (
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="24" cy="24" r="19" />
+        <path d="M24 12.5C24 19.25 28.75 24 35.5 24C28.75 24 24 28.75 24 35.5C24 28.75 19.25 24 12.5 24C19.25 24 24 19.25 24 12.5Z" />
+      </svg>
+    );
+  };
+
   const category = categories[current];
   const categoryMeta = category[lang];
   const categoryItems = category.items.map((item) => presentProblem(lang, item[lang]));
@@ -599,6 +643,19 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
               </div>
               <h1>{text.heroTitle}</h1>
               <p>{text.heroBody}</p>
+              <div className="hero-signals" aria-label="Hero highlights">
+                {text.heroSignals.map((item) => (
+                  <div className="hero-signal-row" key={`${item.icon}-${item.value}`}>
+                    <div className="hero-signal-icon" aria-hidden="true">
+                      {renderHeroSignalIcon(item.icon)}
+                    </div>
+                    <div className="hero-signal-copy">
+                      <strong>{item.value}</strong>
+                      <span>{item.label}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
               <div className="hero-actions">
                 <a className="btn primary" href="#top-10-problems">
                   {text.heroPrimary}
