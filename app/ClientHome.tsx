@@ -212,13 +212,6 @@ const copy = {
   },
 } as const;
 
-const featuredProblemRefs: { id: CategoryId; index: number }[] = [
-  { id: 'housing-real-estate', index: 9 },
-  { id: 'elder-care', index: 4 },
-  { id: 'fintech-payments', index: 0 },
-  { id: 'mobility-micromobility', index: 4 },
-];
-
 const topProblemCardRefs: CategoryId[] = [
   'public-sector-welfare',
   'housing-real-estate',
@@ -492,12 +485,6 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
   const categoryMeta = category[lang];
   const categoryItems = category.items.map((item) => presentProblem(lang, item[lang]));
 
-  const featured = featuredProblemRefs.map(({ id, index }) => {
-    const meta = categories[id][lang];
-    const problem = presentProblem(lang, categories[id].items[index][lang]);
-    return { id, categoryName: meta.name, problem };
-  });
-
   const topProblemCards = useMemo<TopProblemCard[]>(
     () =>
       topProblemCardRefs.map((id) => ({
@@ -561,7 +548,6 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
             </a>
 
             <div className="nav-links">
-              <a href="#insights">{text.navInsights}</a>
               <a href="#top-10-problems">{text.navTop10}</a>
               <a href="#all-problems">{text.navAllProblems}</a>
               <a href="#method">{text.navMethod}</a>
@@ -651,41 +637,6 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                   ›
                 </button>
               </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="insights-section" id="insights">
-          <div className="container">
-            <div className="section-head">
-              <div className="eyebrow">
-                <span className="eyebrow-dot" />
-                {text.insightsLabel}
-              </div>
-              <h2>{text.insightsTitle}</h2>
-            </div>
-
-            <div className="insight-grid">
-              {featured.map(({ id, categoryName, problem }) => (
-                <article className="insight-card" key={`${id}-${problem.title}`}>
-                  <div className="insight-topline">
-                    <span>{categoryName}</span>
-                    <strong>{problem.scores[0]}</strong>
-                  </div>
-                  <h3>{problem.title}</h3>
-                  <p>{problem.description}</p>
-                  <div className="signal-row">
-                    {problem.sourceFamilies.map((source) => (
-                      <span className="signal-pill" key={source}>
-                        {source}
-                      </span>
-                    ))}
-                  </div>
-                  <button className="inline-link" type="button" onClick={() => setCurrent(id)}>
-                    {categoryName}
-                  </button>
-                </article>
-              ))}
             </div>
           </div>
         </section>
