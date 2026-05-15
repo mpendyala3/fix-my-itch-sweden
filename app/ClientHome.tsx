@@ -42,8 +42,7 @@ const copy = {
     navPrivacy: 'Integritet',
     heroEyebrow: 'Sverige talar genom återkommande vardagsfriktion',
     heroTitle: 'Lös verkliga problem',
-    heroBody:
-      'En Sverige-först vy över återkommande, genuina och byggbara problem — utvalda för founders som vill börja i verkliga behov, inte i hype.',
+    heroBody: '',
     heroPrimary: 'Visa top problems',
     heroSecondary: 'Bläddra i alla kategorier',
     proofLabel: 'Vad du tittar på',
@@ -62,10 +61,9 @@ const copy = {
     nextCard: 'Nästa kort',
     insightsBody:
       'Inte ett klagomålsflöde. Inte trendjakt. Ett mer koncentrerat urval av återkommande friktion där människor, hushåll och organisationer faktiskt behöver bättre lösningar.',
-    browserEyebrow: 'Top 10 per kategori',
-    browserTitle: 'Från bred signalbild till konkreta problem',
-    browserBody:
-      'Välj en kategori och läs de tio tydligaste möjligheterna i den. Rubrikerna är skrivna för att vara sakliga, användarnära och grundade i verklig svensk kontext.',
+    browserEyebrow: '',
+    browserTitle: '',
+    browserBody: '',
     filterLabel: 'Filtrera efter',
     categoryLabel: 'Kategori',
     currentView: 'Aktiv vy',
@@ -104,9 +102,9 @@ const copy = {
     trust: 'Tillit',
     open: 'Öppna',
     close: 'Stäng',
-    searchLabel: 'Sök i alla problem',
+    searchLabel: '',
     searchPlaceholder: 'Sök efter bostad, vård, betalningar, pendling…',
-    searchHint: 'Sökningen går över alla kategorier och försöker tolerera små stavfel och ordvarianter.',
+    searchHint: '',
     searchResultsTitle: 'Sökresultat',
     searchResultsNone: 'Ingen tydlig träff ännu. Testa bredare ord eller byt språk.',
     searchResultsCount: 'träffar',
@@ -132,8 +130,7 @@ const copy = {
     navPrivacy: 'Privacy',
     heroEyebrow: 'Sweden speaks through recurring everyday friction',
     heroTitle: 'Solve real-world problems',
-    heroBody:
-      'A Sweden-first view of recurring, genuine, buildable problems — curated for founders who want to start with real demand instead of startup hype.',
+    heroBody: '',
     heroPrimary: 'Show top problems',
     heroSecondary: 'Browse all categories',
     proofLabel: 'What you are looking at',
@@ -152,10 +149,9 @@ const copy = {
     nextCard: 'Next card',
     insightsBody:
       'Not a complaint feed. Not trend-chasing. A tighter selection of recurring friction where people, households, and organizations genuinely need better solutions.',
-    browserEyebrow: 'Top 10 by category',
-    browserTitle: 'From broad signal map to concrete opportunities',
-    browserBody:
-      'Choose a category and read the ten clearest opportunities within it. Headlines are written to stay grounded, user-centered, and culturally appropriate for a Sweden-first audience.',
+    browserEyebrow: '',
+    browserTitle: '',
+    browserBody: '',
     filterLabel: 'Filter by',
     categoryLabel: 'Category',
     currentView: 'Current view',
@@ -194,9 +190,9 @@ const copy = {
     trust: 'Trust',
     open: 'Open',
     close: 'Close',
-    searchLabel: 'Search across all problems',
+    searchLabel: '',
     searchPlaceholder: 'Search housing, care, payments, commuting…',
-    searchHint: 'Search spans all categories and tries to tolerate small typos and wording variations.',
+    searchHint: '',
     searchResultsTitle: 'Search results',
     searchResultsNone: 'No clear match yet. Try broader keywords or switch language.',
     searchResultsCount: 'results',
@@ -714,19 +710,7 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
 
         <section className="problem-browser" id="all-problem-browser">
           <div className="container browser-wrap">
-            <div className="section-head browser-head">
-              <div className="eyebrow">
-                <span className="eyebrow-dot" />
-                {text.browserEyebrow}
-              </div>
-              <h2>{text.browserTitle}</h2>
-              <p>{text.browserBody}</p>
-            </div>
-
-            <form className="search-panel" role="search" aria-label={text.searchLabel} noValidate>
-              <label className="search-label" htmlFor="site-search">
-                {text.searchLabel}
-              </label>
+            <form className="search-panel" role="search" aria-label="Search" noValidate>
               <div className="search-row">
                 <input
                   id="site-search"
@@ -737,7 +721,7 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                   placeholder={text.searchPlaceholder}
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
-                  aria-describedby="site-search-hint site-search-results"
+                  aria-describedby="site-search-results"
                 />
                 {query ? (
                   <button className="btn ghost search-clear" type="button" onClick={() => setQuery('')}>
@@ -745,11 +729,8 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                   </button>
                 ) : null}
               </div>
-              <p className="search-hint" id="site-search-hint">
-                {text.searchHint}
-              </p>
               <p className="search-status" id="site-search-results" aria-live="polite">
-                {showingSearch ? `${searchResults.length} ${text.searchResultsCount}` : categoryMeta.name}
+                {showingSearch ? `${searchResults.length} ${text.searchResultsCount}` : ''}
               </p>
             </form>
 
@@ -758,11 +739,6 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                 <div className="filter-head">
                   <span className="filter-kicker">⌁ {text.filterLabel}</span>
                   <strong>{text.categoryLabel}</strong>
-                </div>
-
-                <div className="filter-current">
-                  <span>{text.currentView}</span>
-                  <p>{showingSearch ? text.searchResultsTitle : categoryMeta.name}</p>
                 </div>
 
                 <div className="filter-list" role="tablist" aria-label={text.categoryLabel}>
@@ -822,9 +798,6 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                             <article className={`problem-row ${isOpen ? 'open' : ''}`} key={result.id}>
                               <div className="problem-row-main">
                                 <div className="problem-question-block">
-                                  <div className="row-rank">
-                                    {text.rank} #{result.rank}
-                                  </div>
                                   <h4>{result.item.title}</h4>
                                 </div>
                                 <div className="problem-score">{result.item.scores[0]}</div>
@@ -891,9 +864,6 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                           <article className={`problem-row ${isOpen ? 'open' : ''}`} key={`${current}-${idx}`}>
                             <div className="problem-row-main">
                               <div className="problem-question-block">
-                                <div className="row-rank">
-                                  {text.rank} #{idx + 1}
-                                </div>
                                 <h4>{item.title}</h4>
                               </div>
                               <div className="problem-score">{item.scores[0]}</div>
