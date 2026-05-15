@@ -504,6 +504,29 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
     categoryButtonRefs.current[current]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
   }, [current]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const scrollToTop = () => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    };
+
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+
+    scrollToTop();
+    const frame = window.requestAnimationFrame(scrollToTop);
+    window.addEventListener('load', scrollToTop);
+    window.addEventListener('pageshow', scrollToTop);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener('load', scrollToTop);
+      window.removeEventListener('pageshow', scrollToTop);
+    };
+  }, []);
+
   const text = copy[lang];
   const renderHeroSignalIcon = (icon: HeroSignal['icon']) => {
     if (icon === 'check') {
