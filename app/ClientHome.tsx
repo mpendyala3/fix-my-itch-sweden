@@ -408,12 +408,6 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
   const categoryMeta = category[lang];
   const categoryItems = category.items.map((item) => presentProblem(lang, item[lang]));
 
-  const stats = useMemo(() => {
-    const categoryCount = categoryOrder.length;
-    const problemCount = categoryOrder.reduce((total, id) => total + categories[id].items.length, 0);
-    return { categoryCount, problemCount };
-  }, []);
-
   const featured = featuredProblemRefs.map(({ id, index }) => {
     const meta = categories[id][lang];
     const problem = presentProblem(lang, categories[id].items[index][lang]);
@@ -508,24 +502,6 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
             </div>
 
             <aside className="hero-side" aria-label="Summary information">
-              <div className="hero-proof-card">
-                <span className="label">{text.proofLabel}</span>
-                <div className="hero-proof-grid">
-                  <div>
-                    <strong>{stats.categoryCount}</strong>
-                    <span>{text.proofItems[0][1]}</span>
-                  </div>
-                  <div>
-                    <strong>{stats.problemCount}</strong>
-                    <span>{text.proofItems[1][1]}</span>
-                  </div>
-                  <div>
-                    <strong>{text.proofItems[2][0]}</strong>
-                    <span>{text.proofItems[2][1]}</span>
-                  </div>
-                </div>
-              </div>
-
               <div className="hero-note-card">
                 <span className="mini-kicker">Sweden-first</span>
                 <p>
