@@ -50,7 +50,7 @@ const copy = {
     heroTitle: 'Lös verkliga problem',
     heroBody: '',
     heroSignals: [
-      { icon: 'check', value: '10 000+', label: 'verifierade problem' },
+      { icon: 'check', value: '200', label: 'verifierade problem' },
       { icon: 'person', value: 'från 50k personer', label: 'och växer' },
       { icon: 'spark', value: 'AI-driven', label: 'kuratering' },
     ] satisfies readonly HeroSignal[],
@@ -143,7 +143,7 @@ const copy = {
     heroTitle: 'Solve real-world problems',
     heroBody: '',
     heroSignals: [
-      { icon: 'check', value: '10,000+', label: 'verified problems' },
+      { icon: 'check', value: '200', label: 'verified problems' },
       { icon: 'person', value: 'from 50k people', label: 'and counting' },
       { icon: 'spark', value: 'AI-powered', label: 'curation' },
     ] satisfies readonly HeroSignal[],
