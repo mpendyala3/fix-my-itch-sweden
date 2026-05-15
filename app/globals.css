@@ -300,6 +300,10 @@ nav {
   font-size: clamp(4.5rem, 15vw, 10.5rem);
 }
 
+.hero-title-line {
+  display: block;
+}
+
 .section-head h2,
 .method-copy h2,
 .mission-card h2,

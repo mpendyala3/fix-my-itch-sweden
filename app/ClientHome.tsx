@@ -663,7 +663,17 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
         <section className="hero-shell">
           <div className="container hero-grid">
             <div className="hero-copy">
-              <h1>{text.heroTitle}</h1>
+              <h1>
+                {lang === 'en' ? (
+                  <>
+                    <span className="hero-title-line">Solve</span>
+                    <span className="hero-title-line">Real-world</span>
+                    <span className="hero-title-line">Problems</span>
+                  </>
+                ) : (
+                  text.heroTitle
+                )}
+              </h1>
               <p>{text.heroBody}</p>
               <div className="hero-signals" aria-label="Hero highlights">
                 {text.heroSignals.map((item) => (
