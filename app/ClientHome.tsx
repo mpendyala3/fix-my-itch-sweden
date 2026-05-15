@@ -659,10 +659,6 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
         <section className="hero-shell">
           <div className="container hero-grid">
             <div className="hero-copy">
-              <div className="eyebrow">
-                <span className="eyebrow-dot" />
-                {text.heroEyebrow}
-              </div>
               <h1>{text.heroTitle}</h1>
               <p>{text.heroBody}</p>
               <div className="hero-signals" aria-label="Hero highlights">
