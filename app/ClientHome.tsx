@@ -43,7 +43,7 @@ const copy = {
     heroEyebrow: '',
     heroTitle: 'Lös verkliga problem',
     heroBody: '',
-    heroPrimary: 'Visa top problems',
+    heroPrimary: 'Visa mig top problems',
     heroSecondary: 'Bläddra i alla kategorier',
     proofLabel: 'Vad du tittar på',
     proofItems: [
@@ -131,7 +131,7 @@ const copy = {
     heroEyebrow: '',
     heroTitle: 'Solve real-world problems',
     heroBody: '',
-    heroPrimary: 'Show top problems',
+    heroPrimary: 'Show me top problems',
     heroSecondary: 'Browse all categories',
     proofLabel: 'What you are looking at',
     proofItems: [
@@ -710,30 +710,6 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
 
         <section className="problem-browser" id="all-problem-browser">
           <div className="container browser-wrap">
-            <form className="search-panel" role="search" aria-label="Search" noValidate>
-              <div className="search-row">
-                <input
-                  id="site-search"
-                  name="q"
-                  type="search"
-                  autoComplete="off"
-                  enterKeyHint="search"
-                  placeholder={text.searchPlaceholder}
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  aria-describedby="site-search-results"
-                />
-                {query ? (
-                  <button className="btn ghost search-clear" type="button" onClick={() => setQuery('')}>
-                    {text.clearSearch}
-                  </button>
-                ) : null}
-              </div>
-              <p className="search-status" id="site-search-results" aria-live="polite">
-                {showingSearch ? `${searchResults.length} ${text.searchResultsCount}` : ''}
-              </p>
-            </form>
-
             <div className="browser-grid" id="all-problems">
               <aside className="filter-panel">
                 <div className="filter-head">
@@ -769,15 +745,15 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                 </div>
               </aside>
 
-              <section className="problem-panel" aria-label={showingSearch ? text.searchResultsTitle : categoryMeta.name}>
+              <section className="problem-panel" aria-label={categoryMeta.name}>
                 <div className="browser-title-inline">
                   <div>
                     <div className="eyebrow">
                       <span className="eyebrow-dot" />
-                      {showingSearch ? text.searchResultsTitle : text.allProblemsLabel}
+                      {text.allProblemsLabel}
                     </div>
-                    <h3>{showingSearch ? text.searchResultsTitle : categoryMeta.name}</h3>
-                    <p>{showingSearch ? text.searchHint : categoryMeta.subtitle}</p>
+                    <h3>{categoryMeta.name}</h3>
+                    <p>{categoryMeta.subtitle}</p>
                   </div>
                 </div>
 
@@ -790,78 +766,10 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                   </div>
 
                   <div className="problem-table-body">
-                    {showingSearch ? (
-                      searchResults.length ? (
-                        searchResults.map((result, idx) => {
-                          const isOpen = expanded === idx;
-                          return (
-                            <article className={`problem-row ${isOpen ? 'open' : ''}`} key={result.id}>
-                              <div className="problem-row-main">
-                                <div className="problem-question-block">
-                                  <h4>{result.item.title}</h4>
-                                </div>
-                                <div className="problem-score">{result.item.scores[0]}</div>
-                                <div className="problem-industry">{result.categoryName}</div>
-                                <button
-                                  className="expand-btn"
-                                  type="button"
-                                  aria-expanded={isOpen}
-                                  aria-label={isOpen ? text.close : text.open}
-                                  onClick={() => setExpanded(isOpen ? -1 : idx)}
-                                >
-                                  <span>{isOpen ? '–' : '+'}</span>
-                                </button>
-                              </div>
-
-                              {isOpen ? (
-                                <div className="problem-expand">
-                                  <div className="expand-copy">
-                                    <span className="expand-label">{text.explanation}</span>
-                                    <p>{result.item.description}</p>
-                                  </div>
-                                  <div className="expand-meta">
-                                    <div className="mini-metric">
-                                      <span>{text.problemScore}</span>
-                                      <strong>{result.item.scores[0]}</strong>
-                                    </div>
-                                    <div className="mini-metric">
-                                      <span>{text.market}</span>
-                                      <strong>{result.item.scores[1]}</strong>
-                                    </div>
-                                    <div className="mini-metric">
-                                      <span>{text.trust}</span>
-                                      <strong>{result.item.scores[2]}</strong>
-                                    </div>
-                                  </div>
-                                  <div className="tag-strip">
-                                    <span className="expand-label">{text.signalFamilies}</span>
-                                    <div className="tag-row">
-                                      {result.item.sourceFamilies.map((tag) => (
-                                        <span className="tag" key={tag}>
-                                          {tag}
-                                        </span>
-                                      ))}
-                                    </div>
-                                  </div>
-                                  <div className="expand-note">
-                                    <span className="expand-label">{text.exactSources}</span>
-                                    <p>{result.item.exactSources.join(' · ')}</p>
-                                  </div>
-                                </div>
-                              ) : null}
-                            </article>
-                          );
-                        })
-                      ) : (
-                        <div className="empty-state">
-                          <p>{text.searchResultsNone}</p>
-                        </div>
-                      )
-                    ) : (
-                      categoryItems.map((item, idx) => {
-                        const isOpen = expanded === idx;
-                        return (
-                          <article className={`problem-row ${isOpen ? 'open' : ''}`} key={`${current}-${idx}`}>
+                    {categoryItems.map((item, idx) => {
+                      const isOpen = expanded === idx;
+                      return (
+                        <article className={`problem-row ${isOpen ? 'open' : ''}`} key={`${current}-${idx}`}>
                             <div className="problem-row-main">
                               <div className="problem-question-block">
                                 <h4>{item.title}</h4>
@@ -921,8 +829,7 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                             ) : null}
                           </article>
                         );
-                      })
-                    )}
+                      })}
                   </div>
                 </div>
               </section>
