@@ -212,6 +212,7 @@ nav {
 }
 
 .hero-shell,
+.top-problems-section,
 .insights-section,
 .problem-browser,
 .method-section,
@@ -509,6 +510,112 @@ nav {
 .browser-wrap {
   display: grid;
   gap: 1.25rem;
+}
+
+.top-problems-wrap {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.top-problems-mobile {
+  display: none;
+}
+
+.top-card-stack {
+  position: relative;
+  min-height: 28rem;
+  border-radius: 2rem;
+  overflow: hidden;
+  background: #020202;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+.top-problem-card {
+  position: absolute;
+  inset: auto 1.2rem 1.2rem 1.2rem;
+  min-height: 18.5rem;
+  border-radius: 1.8rem;
+  padding: 1rem 1rem 1.2rem;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  background: #f8f6f3;
+  color: #111;
+  transform-origin: bottom center;
+  transition: transform 0.28s ease, opacity 0.28s ease;
+  box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.28);
+}
+
+.top-problem-card h3 {
+  margin: 1rem 0 0;
+  font-size: clamp(2.1rem, 8vw, 3.1rem);
+  line-height: 0.96;
+  font-weight: 400;
+}
+
+.top-problem-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(17, 17, 17, 0.12);
+  background: rgba(255, 255, 255, 0.82);
+  color: rgba(17, 17, 17, 0.8);
+  font-size: 0.82rem;
+}
+
+.top-problem-card.depth-0 {
+  z-index: 5;
+  transform: translateY(0) rotate(0deg);
+}
+
+.top-problem-card.depth-1 {
+  z-index: 4;
+  transform: translate(-0.35rem, 0.55rem) rotate(-8deg);
+  background: #1450ff;
+  color: transparent;
+}
+
+.top-problem-card.depth-1 .top-problem-pill {
+  opacity: 0;
+}
+
+.top-problem-card.depth-2 {
+  z-index: 3;
+  transform: translate(0.45rem, 0.95rem) rotate(8deg);
+  background: #424242;
+  color: transparent;
+}
+
+.top-problem-card.depth-2 .top-problem-pill {
+  opacity: 0;
+}
+
+.top-problem-card.depth-3 {
+  z-index: 2;
+  transform: translate(-0.2rem, 1.25rem) rotate(-4deg);
+  background: #ece8e2;
+  color: transparent;
+}
+
+.top-problem-card.depth-3 .top-problem-pill {
+  opacity: 0;
+}
+
+.top-problem-card.depth-4 {
+  z-index: 1;
+  transform: translate(0.55rem, 1.55rem) rotate(6deg);
+  background: #1450ff;
+  color: transparent;
+  opacity: 0.94;
+}
+
+.top-problem-card.depth-4 .top-problem-pill {
+  opacity: 0;
+}
+
+.top-card-controls {
+  display: none;
 }
 
 .search-panel {
@@ -865,6 +972,36 @@ footer {
     padding-inline: 1rem;
   }
 
+  .top-problems-mobile {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .top-problems-head p {
+    max-width: 30rem;
+  }
+
+  .top-card-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    color: rgba(244, 241, 237, 0.8);
+    font-size: 1rem;
+  }
+
+  .top-card-arrow {
+    width: 2.25rem;
+    height: 2.25rem;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: rgba(244, 241, 237, 0.92);
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
   .hero-copy h1 {
     font-size: 4.875rem;
   }
@@ -891,6 +1028,83 @@ footer {
   .hero-actions .btn,
   .search-clear {
     width: 100%;
+  }
+
+  .filter-panel {
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+
+  .filter-head {
+    gap: 0;
+    margin-bottom: 0.875rem;
+  }
+
+  .filter-kicker {
+    display: none;
+  }
+
+  .filter-head strong {
+    font-family: var(--font-sans), system-ui, sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--text);
+  }
+
+  .filter-current {
+    display: none;
+  }
+
+  .filter-list {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(2, minmax(0, auto));
+    grid-auto-columns: max-content;
+    gap: 0.75rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    padding-bottom: 0.25rem;
+    scrollbar-width: none;
+  }
+
+  .filter-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-option {
+    min-height: 2.75rem;
+    padding: 0.7rem 1.05rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: color-mix(in srgb, var(--panel-2) 86%, transparent);
+    color: var(--text-dim);
+    white-space: nowrap;
+    scroll-snap-align: start;
+  }
+
+  .filter-option .check-box {
+    display: none;
+  }
+
+  .filter-option.active {
+    background: #fff;
+    border-color: #fff;
+    color: #111;
+  }
+
+  .problem-panel {
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+
+  .browser-title-inline {
+    display: none;
   }
 
   .problem-table-head {

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { categories, categoryOrder, type CategoryId, type Language } from './site-data';
 import { absoluteUrl, SITE_NAME } from './site-config';
 
@@ -22,6 +22,11 @@ type SearchResult = {
   item: ProblemPresentation;
   rank: number;
   relevance: number;
+};
+
+type TopProblemCard = {
+  categoryName: string;
+  question: string;
 };
 
 const copy = {
@@ -49,6 +54,12 @@ const copy = {
     ],
     insightsLabel: 'Utvalda signaler',
     insightsTitle: 'Några av de mest byggbara Sverige-signalerna just nu',
+    swipeEyebrow: 'Top 10 problems',
+    swipeTitle: 'Top 10 problems',
+    swipeBody: 'Svep mellan tio återkommande problem på mobil — varje kort visar kategori och en konkret fråga att bygga kring.',
+    swipeHint: 'Svep',
+    previousCard: 'Föregående kort',
+    nextCard: 'Nästa kort',
     insightsBody:
       'Inte ett klagomålsflöde. Inte trendjakt. Ett mer koncentrerat urval av återkommande friktion där människor, hushåll och organisationer faktiskt behöver bättre lösningar.',
     browserEyebrow: 'Top 10 per kategori',
@@ -133,6 +144,12 @@ const copy = {
     ],
     insightsLabel: 'Featured signals',
     insightsTitle: 'A few of the most buildable Sweden signals right now',
+    swipeEyebrow: 'Top 10 problems',
+    swipeTitle: 'Top 10 problems',
+    swipeBody: 'Swipe through ten recurring problems on mobile — each card shows the category and a concrete question worth building around.',
+    swipeHint: 'Swipe',
+    previousCard: 'Previous card',
+    nextCard: 'Next card',
     insightsBody:
       'Not a complaint feed. Not trend-chasing. A tighter selection of recurring friction where people, households, and organizations genuinely need better solutions.',
     browserEyebrow: 'Top 10 by category',
@@ -201,6 +218,66 @@ const featuredProblemRefs: { id: CategoryId; index: number }[] = [
   { id: 'fintech-payments', index: 0 },
   { id: 'mobility-micromobility', index: 4 },
 ];
+
+const topProblemCardRefs: CategoryId[] = [
+  'public-sector-welfare',
+  'housing-real-estate',
+  'healthtech',
+  'elder-care',
+  'greentech-sustainability',
+  'integration-immigration',
+  'consumer-services',
+  'home-services',
+  'fintech-payments',
+  'logistics-delivery-infrastructure',
+];
+
+const topProblemQuestions: Record<Language, Record<CategoryId, string>> = {
+  sv: {
+    'public-sector-welfare': 'Varför är beslut i ersättningsärenden så svåra att förutse?',
+    'housing-real-estate': 'Varför är kötiden till trygga hyresrätter fortfarande så lång?',
+    healthtech: 'Varför är det så svårt att få en tid i primärvården i rätt tid?',
+    'elder-care': 'Varför tappar hemtjänsten kontinuitet så ofta?',
+    'greentech-sustainability': 'Varför är elkostnader fortfarande så svåra att förutse?',
+    'integration-immigration': 'Varför tar vägen till fungerande svenska så lång tid?',
+    'consumer-services': 'Varför är det fortfarande så krångligt att säga upp abonnemang?',
+    'home-services': 'Varför är slutkostnaden för renoveringar så svår att lita på?',
+    'fintech-payments': 'Varför stänger BankID-beroende fortfarande ute vissa användare?',
+    'logistics-delivery-infrastructure': 'Varför hamnar paket fortfarande på opraktiska utlämningsställen?',
+    'mobility-micromobility': 'Varför är vardagspendling fortfarande så svår att lita på?',
+    'b2b-services': 'Varför är småföretags administrativa verktyg fortfarande så splittrade?',
+    saas: 'Varför är affärsmjukvara fortfarande så tung att införa och använda?',
+    edtech: 'Varför är det fortfarande svårt att hitta lärverktyg som verkligen passar vardagen?',
+    'food-beverage': 'Varför är det fortfarande så svårt att fatta enkla, trygga matbeslut i vardagen?',
+    ecommerce: 'Varför känns e-handelsreturer fortfarande så onödigt krångliga?',
+    'cold-climate-seasonal': 'Varför skapar vintervardagen fortfarande så mycket friktion i Sverige?',
+    'health-wellness-personal-care': 'Varför är egenvård och välmående fortfarande så svårt att följa upp i vardagen?',
+    'travel-experiences': 'Varför är resor och upplevelser fortfarande så svåra att planera med trygghet?',
+    'outdoor-friluftsliv': 'Varför är det fortfarande svårt att göra friluftsliv enkelt och tillgängligt för fler?',
+  },
+  en: {
+    'public-sector-welfare': 'Why are benefit decisions so hard to predict?',
+    'housing-real-estate': 'Why are rental housing queues still so long?',
+    healthtech: 'Why is it so hard to get a primary care appointment in time?',
+    'elder-care': 'Why does home care lose continuity so often?',
+    'greentech-sustainability': 'Why are electricity costs still so hard to predict?',
+    'integration-immigration': 'Why does the path to functional Swedish take so long?',
+    'consumer-services': 'Why is cancelling subscriptions still so frustrating?',
+    'home-services': 'Why are final renovation costs so hard to trust?',
+    'fintech-payments': 'Why does BankID dependence still exclude some users?',
+    'logistics-delivery-infrastructure': 'Why do parcels still end up at inconvenient pickup points?',
+    'mobility-micromobility': 'Why is everyday commuting still so hard to trust?',
+    'b2b-services': 'Why are small-business admin tools still so fragmented?',
+    saas: 'Why is business software still so heavy to adopt and use?',
+    edtech: 'Why is it still hard to find learning tools that fit everyday reality?',
+    'food-beverage': 'Why is it still hard to make simple, confident food decisions every day?',
+    ecommerce: 'Why do ecommerce returns still feel so unnecessarily painful?',
+    'cold-climate-seasonal': 'Why does winter life in Sweden still create so much friction?',
+    'health-wellness-personal-care': 'Why is everyday self-care still so hard to stay on top of?',
+    'travel-experiences': 'Why are trips and experiences still so hard to plan with confidence?',
+    'outdoor-friluftsliv': 'Why is it still hard to make outdoor life feel simple and accessible for more people?',
+  },
+};
 
 const titleOverrides = {
   sv: {
@@ -396,12 +473,19 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
   const [current, setCurrent] = useState<CategoryId>(categoryOrder[0]);
   const [expanded, setExpanded] = useState(0);
   const [query, setQuery] = useState('');
+  const [activeTopCard, setActiveTopCard] = useState(0);
+  const categoryButtonRefs = useRef<Partial<Record<CategoryId, HTMLButtonElement | null>>>({});
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const searchTerm = new URLSearchParams(window.location.search).get('q');
     if (searchTerm) setQuery(searchTerm);
   }, []);
+
+  useEffect(() => {
+    categoryButtonRefs.current[current]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+  }, [current]);
 
   const text = copy[lang];
   const category = categories[current];
@@ -413,6 +497,15 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
     const problem = presentProblem(lang, categories[id].items[index][lang]);
     return { id, categoryName: meta.name, problem };
   });
+
+  const topProblemCards = useMemo<TopProblemCard[]>(
+    () =>
+      topProblemCardRefs.map((id) => ({
+        categoryName: categories[id][lang].name,
+        question: topProblemQuestions[lang][id],
+      })),
+    [lang],
+  );
 
   const searchResults = useMemo(() => {
     const trimmed = query.trim();
@@ -444,6 +537,15 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
   const showingSearch = query.trim().length > 0;
 
   const homePageSchema = useMemo(() => JSON.stringify(pageSchema(lang)), [lang]);
+
+  const cycleTopCard = (direction: 1 | -1) => {
+    setActiveTopCard((currentIndex) => (currentIndex + direction + topProblemCards.length) % topProblemCards.length);
+  };
+
+  const visibleTopCards = topProblemCards.slice(activeTopCard, activeTopCard + 5);
+  if (visibleTopCards.length < 5) {
+    visibleTopCards.push(...topProblemCards.slice(0, 5 - visibleTopCards.length));
+  }
 
   return (
     <>
@@ -504,6 +606,55 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
           </div>
         </section>
 
+        <section className="top-problems-section" id="top-10-problems">
+          <div className="container top-problems-wrap">
+            <div className="section-head top-problems-head">
+              <div className="eyebrow">
+                <span className="eyebrow-dot" />
+                {text.swipeEyebrow}
+              </div>
+              <h2>{text.swipeTitle}</h2>
+              <p>{text.swipeBody}</p>
+            </div>
+
+            <div className="top-problems-mobile" aria-label={text.swipeTitle}>
+              <div
+                className="top-card-stack"
+                onTouchStart={(event) => setTouchStartX(event.touches[0]?.clientX ?? null)}
+                onTouchEnd={(event) => {
+                  if (touchStartX === null) return;
+                  const delta = event.changedTouches[0].clientX - touchStartX;
+                  if (Math.abs(delta) > 36) cycleTopCard(delta < 0 ? 1 : -1);
+                  setTouchStartX(null);
+                }}
+              >
+                {[...visibleTopCards].reverse().map((card, reversedIndex) => {
+                  const depth = visibleTopCards.length - 1 - reversedIndex;
+
+                  return (
+                    <article className={`top-problem-card depth-${depth}`} key={`${card.categoryName}-${card.question}`}>
+                      <span className="top-problem-pill">{card.categoryName}</span>
+                      <h3>{card.question}</h3>
+                    </article>
+                  );
+                })}
+              </div>
+
+              <div className="top-card-controls">
+                <button aria-label={text.previousCard} className="top-card-arrow" onClick={() => cycleTopCard(-1)} type="button">
+                  ‹
+                </button>
+                <span>
+                  {text.swipeHint} {activeTopCard + 1}/{topProblemCards.length}
+                </span>
+                <button aria-label={text.nextCard} className="top-card-arrow" onClick={() => cycleTopCard(1)} type="button">
+                  ›
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section className="insights-section" id="insights">
           <div className="container">
             <div className="section-head">
@@ -539,7 +690,7 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
           </div>
         </section>
 
-        <section className="problem-browser" id="top-10-problems">
+        <section className="problem-browser" id="all-problem-browser">
           <div className="container browser-wrap">
             <div className="section-head browser-head">
               <div className="eyebrow">
@@ -599,6 +750,9 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                       <button
                         key={id}
                         className={`filter-option ${active ? 'active' : ''}`}
+                        ref={(node) => {
+                          categoryButtonRefs.current[id] = node;
+                        }}
                         onClick={() => {
                           setCurrent(id);
                           setExpanded(0);
