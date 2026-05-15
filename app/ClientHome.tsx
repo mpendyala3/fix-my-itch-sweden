@@ -630,7 +630,6 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
               </div>
               <div className="brand-copy">
                 <strong>{text.brandName}</strong>
-                <span>{text.brandSub}</span>
               </div>
             </a>
 
