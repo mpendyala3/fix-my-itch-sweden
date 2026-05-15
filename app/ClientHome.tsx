@@ -2,17 +2,15 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { categories, categoryOrder, type CategoryId, type Language } from './site-data';
+import { calculateProblemScores, categories, categoryOrder, type CategoryId, type Language, type ProblemTuple, type ScoreBreakdown } from './site-data';
 import { absoluteUrl, SITE_NAME } from './site-config';
-
-type ProblemTuple = readonly [string, string, readonly string[], readonly [number, number, number]];
 
 type ProblemPresentation = {
   title: string;
   description: string;
   exactSources: readonly string[];
   sourceFamilies: string[];
-  scores: readonly [number, number, number];
+  scores: ScoreBreakdown;
 };
 
 type SearchResult = {
@@ -108,9 +106,10 @@ const copy = {
     footerLeft: 'Lös verkliga problem — Sverige-först problem intelligence',
     footerRight: 'Kuraterat för verklig efterfrågan, inte för startup-teater.',
     rank: 'Rank',
-    problemScore: 'Problem score',
-    market: 'Marknad',
-    trust: 'Tillit',
+    severity: 'Severity',
+    tam: 'TAM',
+    whitespace: 'Whitespace',
+    trygghet: 'Trygghet',
     open: 'Öppna',
     close: 'Stäng',
     searchLabel: '',
@@ -201,9 +200,10 @@ const copy = {
     footerLeft: 'Solve real-world problems — Sweden-first problem intelligence',
     footerRight: 'Curated for real demand, not startup theatre.',
     rank: 'Rank',
-    problemScore: 'Problem score',
-    market: 'Market',
-    trust: 'Trust',
+    severity: 'Severity',
+    tam: 'TAM',
+    whitespace: 'Whitespace',
+    trygghet: 'Trygghet',
     open: 'Open',
     close: 'Close',
     searchLabel: '',
@@ -411,12 +411,17 @@ function sourceFamily(tag: string, lang: Language) {
   return lang === 'sv' ? 'Bransch- och expertsignaler' : 'Sector and expert signals';
 }
 
-function presentProblem(lang: Language, tuple: ProblemTuple): ProblemPresentation {
-  const [rawTitle, rawDescription, exactSources, scores] = tuple;
+function formatScoreOutOfTen(value: number) {
+  return Number.isInteger(value) ? `${value}` : value.toFixed(1);
+}
+
+function presentProblem(lang: Language, categoryId: CategoryId, rank: number, tuple: ProblemTuple): ProblemPresentation {
+  const [rawTitle, rawDescription, exactSources] = tuple;
   const title = titleOverrides[lang][rawTitle as keyof (typeof titleOverrides)[typeof lang]] ?? rawTitle;
   const description =
     descriptionOverrides[lang][rawTitle as keyof (typeof descriptionOverrides)[typeof lang]] ?? rawDescription;
   const sourceFamilies = Array.from(new Set(exactSources.map((tag) => sourceFamily(tag, lang)))).slice(0, 3);
+  const scores = calculateProblemScores(categoryId, rank, tuple);
 
   return {
     title,
@@ -558,7 +563,7 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
 
   const category = categories[current];
   const categoryMeta = category[lang];
-  const categoryItems = category.items.map((item) => presentProblem(lang, item[lang]));
+  const categoryItems = category.items.map((item, index) => presentProblem(lang, current, index + 1, item[lang]));
   const categoryRows = [
     categoryOrder.filter((_, idx) => idx % 2 === 0),
     categoryOrder.filter((_, idx) => idx % 2 === 1),
@@ -582,7 +587,7 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
     categoryOrder.forEach((id) => {
       const meta = categories[id][lang];
       categories[id].items.forEach((entry, index) => {
-        const item = presentProblem(lang, entry[lang]);
+        const item = presentProblem(lang, id, index + 1, entry[lang]);
         const relevance = fuzzyScore(trimmed, meta.name, item);
         if (relevance > 0) {
           results.push({
@@ -597,7 +602,7 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
       });
     });
 
-    return results.sort((a, b) => b.relevance - a.relevance || b.item.scores[0] - a.item.scores[0]).slice(0, 12);
+    return results.sort((a, b) => b.relevance - a.relevance || b.item.scores.score - a.item.scores.score).slice(0, 12);
   }, [lang, query]);
 
   const showingSearch = query.trim().length > 0;
@@ -871,7 +876,7 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                               <div className="problem-question-block">
                                 <h4>{item.title}</h4>
                               </div>
-                              <div className="problem-score">{item.scores[0]}</div>
+                              <div className="problem-score">{item.scores.score}/100</div>
                               <div className="problem-industry">{categoryMeta.name}</div>
                               <button
                                 className="expand-btn"
@@ -891,16 +896,20 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                                 </div>
                                 <div className="expand-meta">
                                   <div className="mini-metric">
-                                    <span>{text.problemScore}</span>
-                                    <strong>{item.scores[0]}</strong>
+                                    <span>{text.severity}</span>
+                                    <strong>{formatScoreOutOfTen(item.scores.severity)}/10</strong>
                                   </div>
                                   <div className="mini-metric">
-                                    <span>{text.market}</span>
-                                    <strong>{item.scores[1]}</strong>
+                                    <span>{text.tam}</span>
+                                    <strong>{formatScoreOutOfTen(item.scores.tam)}/10</strong>
                                   </div>
                                   <div className="mini-metric">
-                                    <span>{text.trust}</span>
-                                    <strong>{item.scores[2]}</strong>
+                                    <span>{text.whitespace}</span>
+                                    <strong>{formatScoreOutOfTen(item.scores.whitespace)}/10</strong>
+                                  </div>
+                                  <div className="mini-metric">
+                                    <span>{text.trygghet}</span>
+                                    <strong>{formatScoreOutOfTen(item.scores.trygghet)}/10</strong>
                                   </div>
                                 </div>
                                 <div className="expand-note">

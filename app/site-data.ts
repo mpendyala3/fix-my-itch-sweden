@@ -363,3 +363,229 @@ export const categoryOrder = ['public-sector-welfare', 'housing-real-estate', 'h
 
 export type Language = keyof typeof ui;
 export type CategoryId = keyof typeof categories;
+export type LegacyScoreTuple = readonly [number, number, number];
+export type ProblemTuple = readonly [string, string, readonly string[], LegacyScoreTuple];
+
+export type ScoreBreakdown = {
+  score: number;
+  severity: number;
+  tam: number;
+  whitespace: number;
+  trygghet: number;
+};
+
+const CATEGORY_TAM_BASE: Record<CategoryId, number> = {
+  'public-sector-welfare': 0.8,
+  'housing-real-estate': 0.75,
+  healthtech: 0.7,
+  'elder-care': 0.52,
+  'greentech-sustainability': 0.62,
+  'integration-immigration': 0.48,
+  'consumer-services': 0.78,
+  'home-services': 0.66,
+  'fintech-payments': 0.74,
+  'logistics-delivery-infrastructure': 0.68,
+  'mobility-micromobility': 0.67,
+  'b2b-services': 0.58,
+  saas: 0.57,
+  edtech: 0.54,
+  'food-beverage': 0.76,
+  ecommerce: 0.72,
+  'cold-climate-seasonal': 0.56,
+  'health-wellness-personal-care': 0.69,
+  'travel-experiences': 0.6,
+  'outdoor-friluftsliv': 0.47,
+};
+
+const CATEGORY_WHITESPACE_BASE: Record<CategoryId, number> = {
+  'public-sector-welfare': 0.75,
+  'housing-real-estate': 0.5,
+  healthtech: 0.42,
+  'elder-care': 0.68,
+  'greentech-sustainability': 0.58,
+  'integration-immigration': 0.8,
+  'consumer-services': 0.35,
+  'home-services': 0.46,
+  'fintech-payments': 0.34,
+  'logistics-delivery-infrastructure': 0.54,
+  'mobility-micromobility': 0.52,
+  'b2b-services': 0.51,
+  saas: 0.33,
+  edtech: 0.41,
+  'food-beverage': 0.31,
+  ecommerce: 0.29,
+  'cold-climate-seasonal': 0.57,
+  'health-wellness-personal-care': 0.44,
+  'travel-experiences': 0.38,
+  'outdoor-friluftsliv': 0.64,
+};
+
+const CATEGORY_TRYGGHET_BASE: Record<CategoryId, number> = {
+  'public-sector-welfare': 1.0,
+  'housing-real-estate': 0.78,
+  healthtech: 0.96,
+  'elder-care': 1.04,
+  'greentech-sustainability': 0.46,
+  'integration-immigration': 0.92,
+  'consumer-services': 0.65,
+  'home-services': 0.72,
+  'fintech-payments': 1.05,
+  'logistics-delivery-infrastructure': 0.58,
+  'mobility-micromobility': 0.66,
+  'b2b-services': 0.38,
+  saas: 0.34,
+  edtech: 0.62,
+  'food-beverage': 0.5,
+  ecommerce: 0.56,
+  'cold-climate-seasonal': 0.7,
+  'health-wellness-personal-care': 0.88,
+  'travel-experiences': 0.52,
+  'outdoor-friluftsliv': 0.62,
+};
+
+const PAIN_KEYWORDS = [
+  'stress', 'frustration', 'frustrating', 'dyr', 'expensive', 'costly', 'skada', 'damage', 'risk', 'dröjer', 'delay', 'delayed',
+  'queue', 'kö', 'sjuk', 'ill', 'pain', 'unsafe', 'otrygg', 'bedrägeri', 'fraud', 'missed', 'försening', 'försening', 'anxiety',
+  'oro', 'worry', 'wait', 'waiting', 'lockout', 'blocked', 'rejected', 'rejection', 'lost', 'ensamhet', 'loneliness',
+];
+
+const TIME_KEYWORDS = [
+  'lång', 'långa', 'long', 'wait', 'waiting', 'delay', 'delayed', 'queue', 'kö', 'slow', 'slowness', 'dröjer', 'försening',
+  'försening', 'hours', 'days', 'weeks', 'months', 'years', 'upprepa', 'repeat',
+];
+
+const MONEY_KEYWORDS = [
+  'cost', 'costs', 'dyr', 'dyra', 'avgift', 'fee', 'fees', 'bill', 'bills', 'rent', 'hyra', 'mortgage', 'invoice', 'refund',
+  'debt', 'skuld', 'price', 'prices', 'överhyra', 'energy', 'elpris', 'electricity', 'insurance', 'reimbursement',
+];
+
+const TRUST_KEYWORDS = [
+  'trust', 'distrust', 'misstro', 'trygg', 'trygghet', 'safety', 'safe', 'security', 'privacy', 'integrity', 'integritet',
+  'fraud', 'bedrägeri', 'scam', 'false suspicion', 'misstänkliggör', 'unclear', 'otydlig', 'opaque', 'vilseled', 'misleading',
+  'bankid', 'bank', 'authorities', 'myndighet', 'journal', 'records', 'child', 'barn', 'elderly', 'äldre', 'demens',
+];
+
+const VULNERABILITY_KEYWORDS = [
+  'elderly', 'older', 'äldre', 'disabled', 'funktionsnedsättning', 'children', 'barn', 'patients', 'patienter', 'newcomers',
+  'nyanlända', 'caregivers', 'anhöriga', 'dementia', 'demens', 'autism', 'adhd', 'mental', 'psych', 'psychic', 'psykisk',
+  'women', 'kvinn', 'allergy', 'allerg', 'loneliness', 'ensamhet',
+];
+
+const BROAD_AUDIENCE_KEYWORDS = [
+  'people', 'consumers', 'citizens', 'households', 'workers', 'families', 'travellers', 'travelers', 'users', 'residents',
+  'patients', 'students', 'drivers', 'företag', 'kunder', 'hushåll', 'personer', 'människor', 'invånare', 'resenärer',
+  'elever', 'familjer', 'arbets', 'boende',
+];
+
+const NICHE_KEYWORDS = [
+  'dementia', 'demens', 'adhd', 'autism', 'archipelago', 'skärgård', 'tick', 'fästing', 'roof snow', 'taksnö', 'dog', 'hund',
+  'pollen', 'reindeer', 'ren', 'tooth', 'tand', 'beauty', 'skönhet',
+];
+
+const UNDERSERVED_KEYWORDS = [
+  'fragmented', 'splittrad', 'unclear', 'otydlig', 'coordination', 'samordning', 'difficult to compare', 'svårt att jämföra',
+  'difficult to verify', 'svårt att verifiera', 'hard to navigate', 'svår att hitta', 'gaps', 'glapp', 'accessibility',
+  'tillgänglighet', 'manual', 'outdated', 'inaktuell', 'repeated', 'upprepa', 'no clear', 'ingen tydlig', 'underskatta',
+];
+
+const CROWDED_KEYWORDS = [
+  'subscription', 'abonnemang', 'food delivery', 'leverans', 'e-commerce', 'e-handel', 'saas', 'bank', 'insurance', 'renovation',
+  'travel', 'resor', 'telecom', 'broadband', 'cleaning', 'städ', 'moving', 'flytt',
+];
+
+const ACTIONABLE_KEYWORDS = [
+  'booking', 'appointment', 'portal', 'status', 'compare', 'jämföra', 'refund', 'payment', 'queue', 'kö', 'forms', 'formulär',
+  'notification', 'avisering', 'routing', 'delivery', 'support', 'customer service', 'contact', 'document', 'verification',
+  'planering', 'scheduling', 'signering', 'cancellation', 'uppsägning',
+];
+
+const INSTITUTION_SOURCE_KEYWORDS = [
+  'mynd', 'verket', 'styrelsen', 'trafikverket', 'socialstyrelsen', 'försäkringskassan', 'polisen', 'pts', 'digg', '1177',
+  'boverket', 'migrationsverket', 'skolverket', 'finansinspektionen', 'riksbank', 'postnord',
+];
+
+const COMMUNITY_SOURCE_KEYWORDS = ['reddit', 'flashback', 'trustpilot', 'reco', 'linkedin'];
+const COMPLAINT_SOURCE_KEYWORDS = ['arn', 'hallå konsument', 'konsumentverket'];
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function roundHalf(value: number) {
+  return Math.round(value * 2) / 2;
+}
+
+function countHits(text: string, keywords: readonly string[]) {
+  return keywords.reduce((total, keyword) => total + (text.includes(keyword) ? 1 : 0), 0);
+}
+
+export function calculateProblemScores(categoryId: CategoryId, rank: number, tuple: ProblemTuple): ScoreBreakdown {
+  const [title, description, sources, legacy] = tuple;
+  const text = `${title} ${description}`.toLowerCase();
+  const sourceText = sources.join(' ').toLowerCase();
+
+  const painHits = countHits(text, PAIN_KEYWORDS);
+  const timeHits = countHits(text, TIME_KEYWORDS);
+  const moneyHits = countHits(text, MONEY_KEYWORDS);
+  const trustHits = countHits(text, TRUST_KEYWORDS);
+  const vulnerabilityHits = countHits(text, VULNERABILITY_KEYWORDS);
+  const audienceHits = countHits(text, BROAD_AUDIENCE_KEYWORDS);
+  const nicheHits = countHits(text, NICHE_KEYWORDS);
+  const underservedHits = countHits(text, UNDERSERVED_KEYWORDS);
+  const crowdedHits = countHits(text, CROWDED_KEYWORDS);
+  const actionableHits = countHits(text, ACTIONABLE_KEYWORDS);
+  const institutionHits = countHits(sourceText, INSTITUTION_SOURCE_KEYWORDS);
+  const communityHits = countHits(sourceText, COMMUNITY_SOURCE_KEYWORDS);
+  const complaintHits = countHits(sourceText, COMPLAINT_SOURCE_KEYWORDS);
+  const sourceVarietyBoost = sources.length > 1 ? 0.18 : 0;
+  const evidenceMixBoost = institutionHits > 0 && (communityHits > 0 || complaintHits > 0) ? 0.3 : 0;
+  const rankPressure = clamp((11 - rank) * 0.06, 0.05, 0.6);
+
+  const severity = roundHalf(
+    clamp(
+      5.0 + ((legacy[0] - 74) / 18) * 2.9 + Math.min(painHits, 4) * 0.2 + Math.min(timeHits, 3) * 0.1 + Math.min(moneyHits, 3) * 0.1 + Math.min(vulnerabilityHits, 2) * 0.15 + rankPressure,
+      5.0,
+      9.5,
+    ),
+  );
+
+  const tam = roundHalf(
+    clamp(
+      4.8 + ((legacy[1] - 77) / 10) * 1.8 + CATEGORY_TAM_BASE[categoryId] + Math.min(audienceHits, 4) * 0.08 - Math.min(nicheHits, 2) * 0.12 + sourceVarietyBoost,
+      4.5,
+      9.0,
+    ),
+  );
+
+  const whitespace = roundHalf(
+    clamp(
+      4.9 + ((legacy[2] - 75) / 13) * 1.6 + CATEGORY_WHITESPACE_BASE[categoryId] + Math.min(underservedHits, 4) * 0.12 + evidenceMixBoost - Math.min(crowdedHits, 3) * 0.1,
+      4.5,
+      9.0,
+    ),
+  );
+
+  const trygghet = roundHalf(
+    clamp(
+      4.4 + CATEGORY_TRYGGHET_BASE[categoryId] + severity * 0.14 + Math.min(trustHits, 4) * 0.18 + Math.min(vulnerabilityHits, 3) * 0.12 + Math.min(institutionHits, 2) * 0.08,
+      4.5,
+      9.5,
+    ),
+  );
+
+  const urgency = clamp(4.6 + Math.min(timeHits, 4) * 0.35 + Math.min(painHits, 3) * 0.25 + Math.min(vulnerabilityHits, 2) * 0.25, 4.5, 9.2);
+  const emotional = clamp(4.5 + Math.min(trustHits, 4) * 0.3 + Math.min(painHits, 3) * 0.18 + Math.min(moneyHits, 2) * 0.14, 4.5, 9.0);
+  const actionability = clamp(5.0 + Math.min(actionableHits, 4) * 0.26 + evidenceMixBoost * 0.8 + sourceVarietyBoost * 0.6 - Math.min(crowdedHits, 2) * 0.08, 5.0, 9.0);
+
+  const score = Math.round(
+    (severity * 0.29 + tam * 0.21 + whitespace * 0.18 + trygghet * 0.14 + urgency * 0.08 + emotional * 0.05 + actionability * 0.05) * 10,
+  );
+
+  return {
+    score: clamp(score, 55, 95),
+    severity,
+    tam,
+    whitespace,
+    trygghet,
+  };
+}
