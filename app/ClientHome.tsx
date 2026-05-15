@@ -56,7 +56,7 @@ const copy = {
     insightsTitle: 'Några av de mest byggbara Sverige-signalerna just nu',
     swipeEyebrow: 'Top 10 problems',
     swipeTitle: 'Top 10 problems',
-    swipeBody: 'Svep mellan tio återkommande problem på mobil — varje kort visar kategori och en konkret fråga att bygga kring.',
+    swipeBody: '',
     swipeHint: 'Svep',
     previousCard: 'Föregående kort',
     nextCard: 'Nästa kort',
@@ -146,7 +146,7 @@ const copy = {
     insightsTitle: 'A few of the most buildable Sweden signals right now',
     swipeEyebrow: 'Top 10 problems',
     swipeTitle: 'Top 10 problems',
-    swipeBody: 'Swipe through ten recurring problems on mobile — each card shows the category and a concrete question worth building around.',
+    swipeBody: '',
     swipeHint: 'Swipe',
     previousCard: 'Previous card',
     nextCard: 'Next card',
@@ -468,7 +468,19 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
   const [query, setQuery] = useState('');
   const [activeTopCard, setActiveTopCard] = useState(0);
   const categoryButtonRefs = useRef<Partial<Record<CategoryId, HTMLButtonElement | null>>>({});
-  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const topCardGesture = useRef<{
+    startX: number;
+    startY: number;
+    deltaX: number;
+    deltaY: number;
+    mode: 'idle' | 'locked' | 'swipe' | 'scroll';
+  }>({
+    startX: 0,
+    startY: 0,
+    deltaX: 0,
+    deltaY: 0,
+    mode: 'idle',
+  });
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -606,12 +618,73 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
             <div className="top-problems-mobile" aria-label={text.swipeTitle}>
               <div
                 className="top-card-stack"
-                onTouchStart={(event) => setTouchStartX(event.touches[0]?.clientX ?? null)}
+                onTouchStart={(event) => {
+                  const touch = event.touches[0];
+                  if (!touch) return;
+                  topCardGesture.current = {
+                    startX: touch.clientX,
+                    startY: touch.clientY,
+                    deltaX: 0,
+                    deltaY: 0,
+                    mode: 'locked',
+                  };
+                }}
+                onTouchMove={(event) => {
+                  const touch = event.touches[0];
+                  if (!touch) return;
+
+                  const gesture = topCardGesture.current;
+                  gesture.deltaX = touch.clientX - gesture.startX;
+                  gesture.deltaY = touch.clientY - gesture.startY;
+
+                  const absX = Math.abs(gesture.deltaX);
+                  const absY = Math.abs(gesture.deltaY);
+
+                  if (gesture.mode === 'scroll') {
+                    return;
+                  }
+
+                  if (absY > 72 && absY > absX * 1.35) {
+                    gesture.mode = 'scroll';
+                    return;
+                  }
+
+                  if (absX > 12 && absX >= absY) {
+                    gesture.mode = 'swipe';
+                  }
+
+                  if (gesture.mode === 'locked' || gesture.mode === 'swipe') {
+                    event.preventDefault();
+                  }
+                }}
                 onTouchEnd={(event) => {
-                  if (touchStartX === null) return;
-                  const delta = event.changedTouches[0].clientX - touchStartX;
-                  if (Math.abs(delta) > 36) cycleTopCard(delta < 0 ? 1 : -1);
-                  setTouchStartX(null);
+                  const touch = event.changedTouches[0];
+                  if (!touch) return;
+
+                  const gesture = topCardGesture.current;
+                  const deltaX = touch.clientX - gesture.startX;
+                  const deltaY = touch.clientY - gesture.startY;
+
+                  if (gesture.mode !== 'scroll' && Math.abs(deltaX) > 36 && Math.abs(deltaX) > Math.abs(deltaY)) {
+                    cycleTopCard(deltaX < 0 ? 1 : -1);
+                  }
+
+                  topCardGesture.current = {
+                    startX: 0,
+                    startY: 0,
+                    deltaX: 0,
+                    deltaY: 0,
+                    mode: 'idle',
+                  };
+                }}
+                onTouchCancel={() => {
+                  topCardGesture.current = {
+                    startX: 0,
+                    startY: 0,
+                    deltaX: 0,
+                    deltaY: 0,
+                    mode: 'idle',
+                  };
                 }}
               >
                 {[...visibleTopCards].reverse().map((card, reversedIndex) => {
@@ -630,9 +703,7 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                 <button aria-label={text.previousCard} className="top-card-arrow" onClick={() => cycleTopCard(-1)} type="button">
                   ‹
                 </button>
-                <span>
-                  {text.swipeHint} {activeTopCard + 1}/{topProblemCards.length}
-                </span>
+                <span>{text.swipeHint}</span>
                 <button aria-label={text.nextCard} className="top-card-arrow" onClick={() => cycleTopCard(1)} type="button">
                   ›
                 </button>
