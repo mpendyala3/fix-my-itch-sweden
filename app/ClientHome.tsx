@@ -807,16 +807,6 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                                     <strong>{item.scores[2]}</strong>
                                   </div>
                                 </div>
-                                <div className="tag-strip">
-                                  <span className="expand-label">{text.signalFamilies}</span>
-                                  <div className="tag-row">
-                                    {item.sourceFamilies.map((tag) => (
-                                      <span className="tag" key={tag}>
-                                        {tag}
-                                      </span>
-                                    ))}
-                                  </div>
-                                </div>
                                 <div className="expand-note">
                                   <span className="expand-label">{text.exactSources}</span>
                                   <p>{item.exactSources.join(' · ')}</p>
