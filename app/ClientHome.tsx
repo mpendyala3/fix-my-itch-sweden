@@ -796,15 +796,9 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
 
         <footer>
           <div className="container footer-grid">
-            <div>
-              <div className="footer-title">{text.footerLeft}</div>
-              <p>{text.footerRight}</p>
-            </div>
             <nav aria-label={text.browseLabel}>
               <div className="footer-nav-title">{text.browseLabel}</div>
               <div className="footer-links">
-                <Link href="/architecture/">{text.architectureLink}</Link>
-                <Link href="/prototype/">{text.prototypeLink}</Link>
                 <Link href="/privacy/">{text.privacyLink}</Link>
                 <Link href="/terms/">{text.termsLink}</Link>
                 <a href="#home">{text.backToTop}</a>
