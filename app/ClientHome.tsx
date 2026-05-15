@@ -623,7 +623,7 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
       <header className="nav-shell" id="home">
         <div className="container">
           <nav aria-label="Primary">
-            <a className="brand" href="#home">
+            <a className="brand" href="#home" aria-label={text.brandName}>
               <div className="brand-mark" aria-hidden="true">
                 <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="32" cy="32" r="28" className="brand-ring" />
@@ -640,9 +640,6 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                   <circle cx="45.5" cy="41.5" r="6.5" className="brand-coin" />
                   <path d="M42.8 41.5L44.7 43.4L48.3 39.8" className="brand-coin-mark" />
                 </svg>
-              </div>
-              <div className="brand-copy">
-                <strong>{text.brandName}</strong>
               </div>
             </a>
 
