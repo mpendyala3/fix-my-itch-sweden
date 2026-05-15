@@ -96,9 +96,9 @@ const copy = {
       ['Byggbar riktning', 'Varje rad ska hjälpa en founder att se vart en lösning skulle kunna börja.'],
     ],
     missionLabel: 'Vårt uppdrag',
-    missionTitle: 'Börja där Sverige faktiskt behöver bättre lösningar',
+    missionTitle: 'Börja där möjligheten finns',
     missionBody:
-      'Målet är inte att lista allt som är fel. Målet är att synliggöra återkommande problem som är verkliga, relevanta och värda att bygga kring.',
+      'Varje samhälle har friktion. Här är Sveriges — de återkommande luckorna, vardagsfrustrationerna och utrymmena där något bättre väntar på att byggas.',
     ctaLabel: 'Nästa steg',
     ctaTitle: 'Bygg runt verklig efterfrågan',
     ctaBody:
@@ -190,9 +190,9 @@ const copy = {
       ['Buildable direction', 'Each row should help a founder see where a solution could realistically begin.'],
     ],
     missionLabel: 'Our mission',
-    missionTitle: 'Start where Sweden genuinely needs better solutions',
+    missionTitle: 'Start where the opportunity is',
     missionBody:
-      'The goal is not to list everything that is wrong. The goal is to surface recurring problems that are real, relevant, and worth building around.',
+      'Every society has friction. These are Sweden’s — the recurring gaps, the everyday frustrations, the spaces where something better is waiting to be built.',
     ctaLabel: 'Next move',
     ctaTitle: 'Build around real demand',
     ctaBody:
