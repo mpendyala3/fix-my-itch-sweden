@@ -1,7 +1,9 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import Link from 'next/link';
+import { useEffect, useMemo, useState } from 'react';
 import { categories, categoryOrder, type CategoryId, type Language } from './site-data';
+import { absoluteUrl, SITE_NAME } from './site-config';
 
 type ProblemTuple = readonly [string, string, readonly string[], readonly [number, number, number]];
 
@@ -13,6 +15,15 @@ type ProblemPresentation = {
   scores: readonly [number, number, number];
 };
 
+type SearchResult = {
+  id: string;
+  categoryId: CategoryId;
+  categoryName: string;
+  item: ProblemPresentation;
+  rank: number;
+  relevance: number;
+};
+
 const copy = {
   sv: {
     brandName: 'Lös verkliga problem',
@@ -22,6 +33,8 @@ const copy = {
     navAllProblems: 'Alla problem',
     navMethod: 'Metod',
     navMission: 'Mission',
+    navArchitecture: 'Arkitektur',
+    navPrivacy: 'Integritet',
     heroEyebrow: 'Sverige talar genom återkommande vardagsfriktion',
     heroTitle: 'Lös verkliga problem',
     heroBody:
@@ -80,6 +93,21 @@ const copy = {
     trust: 'Tillit',
     open: 'Öppna',
     close: 'Stäng',
+    searchLabel: 'Sök i alla problem',
+    searchPlaceholder: 'Sök efter bostad, vård, betalningar, pendling…',
+    searchHint: 'Sökningen går över alla kategorier och försöker tolerera små stavfel och ordvarianter.',
+    searchResultsTitle: 'Sökresultat',
+    searchResultsNone: 'Ingen tydlig träff ännu. Testa bredare ord eller byt språk.',
+    searchResultsCount: 'träffar',
+    clearSearch: 'Rensa',
+    routeLabel: 'Aktiv route',
+    featuredLabel: 'Utvald kategori',
+    backToTop: 'Till toppen',
+    browseLabel: 'Fler sidor',
+    privacyLink: 'Integritetspolicy',
+    termsLink: 'Villkor',
+    prototypeLink: 'Prototype',
+    architectureLink: 'Arkitektur',
   },
   en: {
     brandName: 'Solve real-world problems',
@@ -89,6 +117,8 @@ const copy = {
     navAllProblems: 'All problems',
     navMethod: 'Method',
     navMission: 'Mission',
+    navArchitecture: 'Architecture',
+    navPrivacy: 'Privacy',
     heroEyebrow: 'Sweden speaks through recurring everyday friction',
     heroTitle: 'Solve real-world problems',
     heroBody:
@@ -147,6 +177,21 @@ const copy = {
     trust: 'Trust',
     open: 'Open',
     close: 'Close',
+    searchLabel: 'Search across all problems',
+    searchPlaceholder: 'Search housing, care, payments, commuting…',
+    searchHint: 'Search spans all categories and tries to tolerate small typos and wording variations.',
+    searchResultsTitle: 'Search results',
+    searchResultsNone: 'No clear match yet. Try broader keywords or switch language.',
+    searchResultsCount: 'results',
+    clearSearch: 'Clear',
+    routeLabel: 'Current route',
+    featuredLabel: 'Featured category',
+    backToTop: 'Back to top',
+    browseLabel: 'More pages',
+    privacyLink: 'Privacy policy',
+    termsLink: 'Terms',
+    prototypeLink: 'Prototype',
+    architectureLink: 'Architecture',
   },
 } as const;
 
@@ -201,6 +246,37 @@ const descriptionOverrides = {
   },
 } as const;
 
+function normalizeText(value: string) {
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function levenshtein(a: string, b: string) {
+  if (a === b) return 0;
+  if (!a) return b.length;
+  if (!b) return a.length;
+  const matrix = Array.from({ length: b.length + 1 }, (_, idx) => [idx]);
+  for (let idx = 0; idx <= a.length; idx += 1) {
+    matrix[0][idx] = idx;
+  }
+  for (let row = 1; row <= b.length; row += 1) {
+    for (let col = 1; col <= a.length; col += 1) {
+      const cost = a[col - 1] === b[row - 1] ? 0 : 1;
+      matrix[row][col] = Math.min(
+        matrix[row - 1][col] + 1,
+        matrix[row][col - 1] + 1,
+        matrix[row - 1][col - 1] + cost,
+      );
+    }
+  }
+  return matrix[b.length][a.length];
+}
+
 function sourceFamily(tag: string, lang: Language) {
   const lower = tag.toLowerCase();
 
@@ -208,7 +284,7 @@ function sourceFamily(tag: string, lang: Language) {
     return lang === 'sv' ? 'Community- och marknadssignaler' : 'Community and market signals';
   }
 
-  if (['arn', 'hallå konsument', 'hallå konsument', 'konsumentverket'].some((token) => lower.includes(token))) {
+  if (['arn', 'hallå konsument', 'konsumentverket'].some((token) => lower.includes(token))) {
     return lang === 'sv' ? 'Konsumentskydd & klagomålsdata' : 'Consumer protection and complaint data';
   }
 
@@ -229,7 +305,6 @@ function sourceFamily(tag: string, lang: Language) {
       'livsmedelsverket',
       'migrationsverket',
       'msb',
-      'myndigheterna',
       'naturvardsverket',
       'polisen',
       'postnord',
@@ -270,10 +345,63 @@ function presentProblem(lang: Language, tuple: ProblemTuple): ProblemPresentatio
   };
 }
 
-export function HomePage() {
+function fuzzyScore(query: string, categoryName: string, item: ProblemPresentation) {
+  const normalizedQuery = normalizeText(query);
+  if (!normalizedQuery) return 0;
+
+  const title = normalizeText(item.title);
+  const description = normalizeText(item.description);
+  const category = normalizeText(categoryName);
+  const exactSources = normalizeText(item.exactSources.join(' '));
+  const haystack = `${title} ${description} ${category} ${exactSources}`;
+
+  if (haystack.includes(normalizedQuery)) return 120;
+
+  const words = haystack.split(' ').filter(Boolean);
+  const queryWords = normalizedQuery.split(' ').filter(Boolean);
+  let score = 0;
+
+  for (const term of queryWords) {
+    if (title.includes(term)) score += 30;
+    else if (description.includes(term)) score += 18;
+    else if (category.includes(term)) score += 14;
+    else if (words.some((word) => word.startsWith(term) || term.startsWith(word))) score += 10;
+    else {
+      const closeWord = words.some((word) => word.length > 3 && levenshtein(word, term) <= 2);
+      if (closeWord) score += 7;
+    }
+  }
+
+  return score;
+}
+
+function pageSchema(lang: Language) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: lang === 'sv' ? 'Lös verkliga problem' : 'Solve real-world problems',
+    url: absoluteUrl('/'),
+    inLanguage: lang === 'sv' ? 'sv-SE' : 'en',
+    about: 'Sweden-first founder opportunity intelligence',
+    isPartOf: {
+      '@type': 'WebSite',
+      name: SITE_NAME,
+      url: absoluteUrl('/'),
+    },
+  };
+}
+
+export function HomePage({ routeLabel }: { routeLabel?: string }) {
   const [lang, setLang] = useState<Language>('sv');
   const [current, setCurrent] = useState<CategoryId>(categoryOrder[0]);
   const [expanded, setExpanded] = useState(0);
+  const [query, setQuery] = useState('');
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const searchTerm = new URLSearchParams(window.location.search).get('q');
+    if (searchTerm) setQuery(searchTerm);
+  }, []);
 
   const text = copy[lang];
   const category = categories[current];
@@ -292,11 +420,42 @@ export function HomePage() {
     return { id, categoryName: meta.name, problem };
   });
 
+  const searchResults = useMemo(() => {
+    const trimmed = query.trim();
+    if (!trimmed) return [] as SearchResult[];
+
+    const results: SearchResult[] = [];
+
+    categoryOrder.forEach((id) => {
+      const meta = categories[id][lang];
+      categories[id].items.forEach((entry, index) => {
+        const item = presentProblem(lang, entry[lang]);
+        const relevance = fuzzyScore(trimmed, meta.name, item);
+        if (relevance > 0) {
+          results.push({
+            id: `${id}-${index}`,
+            categoryId: id,
+            categoryName: meta.name,
+            item,
+            rank: index + 1,
+            relevance,
+          });
+        }
+      });
+    });
+
+    return results.sort((a, b) => b.relevance - a.relevance || b.item.scores[0] - a.item.scores[0]).slice(0, 12);
+  }, [lang, query]);
+
+  const showingSearch = query.trim().length > 0;
+
+  const homePageSchema = useMemo(() => JSON.stringify(pageSchema(lang)), [lang]);
+
   return (
-    <main className="home-page">
-      <div className="nav-shell">
+    <>
+      <header className="nav-shell" id="home">
         <div className="container">
-          <nav>
+          <nav aria-label="Primary">
             <a className="brand" href="#home">
               <div className="brand-mark">SE</div>
               <div className="brand-copy">
@@ -311,292 +470,420 @@ export function HomePage() {
               <a href="#all-problems">{text.navAllProblems}</a>
               <a href="#method">{text.navMethod}</a>
               <a href="#mission">{text.navMission}</a>
+              <Link href="/architecture/">{text.navArchitecture}</Link>
             </div>
 
             <div className="nav-actions">
               <div className="lang-toggle" aria-label="Language toggle">
-                <button className={lang === 'sv' ? 'active' : ''} onClick={() => setLang('sv')}>
+                <button className={lang === 'sv' ? 'active' : ''} onClick={() => setLang('sv')} type="button">
                   SV
                 </button>
-                <button className={lang === 'en' ? 'active' : ''} onClick={() => setLang('en')}>
+                <button className={lang === 'en' ? 'active' : ''} onClick={() => setLang('en')} type="button">
                   EN
                 </button>
               </div>
             </div>
           </nav>
         </div>
-      </div>
+      </header>
 
-      <section className="hero-shell" id="home">
-        <div className="container hero-grid">
-          <div className="hero-copy">
-            <div className="eyebrow">
-              <span className="eyebrow-dot" />
-              {text.heroEyebrow}
-            </div>
-            <h1>{text.heroTitle}</h1>
-            <p>{text.heroBody}</p>
-            <div className="hero-actions">
-              <a className="btn primary" href="#top-10-problems">
-                {text.heroPrimary}
-              </a>
-              <a className="btn ghost" href="#all-problems">
-                {text.heroSecondary}
-              </a>
-            </div>
-          </div>
-
-          <div className="hero-side">
-            <div className="hero-proof-card">
-              <span className="label">{text.proofLabel}</span>
-              <div className="hero-proof-grid">
-                <div>
-                  <strong>{stats.categoryCount}</strong>
-                  <span>{text.proofItems[0][1]}</span>
-                </div>
-                <div>
-                  <strong>{stats.problemCount}</strong>
-                  <span>{text.proofItems[1][1]}</span>
-                </div>
-                <div>
-                  <strong>{text.proofItems[2][0]}</strong>
-                  <span>{text.proofItems[2][1]}</span>
-                </div>
+      <main className="home-page" id="main-content">
+        <section className="hero-shell">
+          <div className="container hero-grid">
+            <div className="hero-copy">
+              <div className="eyebrow">
+                <span className="eyebrow-dot" />
+                {text.heroEyebrow}
+              </div>
+              <h1>{text.heroTitle}</h1>
+              <p>{text.heroBody}</p>
+              <div className="hero-actions">
+                <a className="btn primary" href="#top-10-problems">
+                  {text.heroPrimary}
+                </a>
+                <a className="btn ghost" href="#all-problems">
+                  {text.heroSecondary}
+                </a>
               </div>
             </div>
 
-            <div className="hero-note-card">
-              <span className="mini-kicker">Sweden-first</span>
-              <p>
-                {lang === 'sv'
-                  ? 'Mer kuraterad founder intelligence. Mindre ton av allmän frustration.'
-                  : 'More curated founder intelligence. Less generic complaint energy.'}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="insights-section" id="insights">
-        <div className="container">
-          <div className="section-head">
-            <div className="eyebrow">
-              <span className="eyebrow-dot" />
-              {text.insightsLabel}
-            </div>
-            <h2>{text.insightsTitle}</h2>
-            <p>{text.insightsBody}</p>
-          </div>
-
-          <div className="insight-grid">
-            {featured.map(({ id, categoryName, problem }) => (
-              <article className="insight-card" key={`${id}-${problem.title}`}>
-                <div className="insight-topline">
-                  <span>{categoryName}</span>
-                  <strong>{problem.scores[0]}</strong>
+            <aside className="hero-side" aria-label="Summary information">
+              <div className="hero-proof-card">
+                <span className="label">{text.proofLabel}</span>
+                <div className="hero-proof-grid">
+                  <div>
+                    <strong>{stats.categoryCount}</strong>
+                    <span>{text.proofItems[0][1]}</span>
+                  </div>
+                  <div>
+                    <strong>{stats.problemCount}</strong>
+                    <span>{text.proofItems[1][1]}</span>
+                  </div>
+                  <div>
+                    <strong>{text.proofItems[2][0]}</strong>
+                    <span>{text.proofItems[2][1]}</span>
+                  </div>
                 </div>
-                <h3>{problem.title}</h3>
-                <p>{problem.description}</p>
-                <div className="signal-row">
-                  {problem.sourceFamilies.map((source) => (
-                    <span className="signal-pill" key={source}>
-                      {source}
-                    </span>
-                  ))}
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="problem-browser" id="top-10-problems">
-        <div className="container browser-wrap">
-          <div className="section-head browser-head">
-            <div className="eyebrow">
-              <span className="eyebrow-dot" />
-              {text.browserEyebrow}
-            </div>
-            <h2>{text.browserTitle}</h2>
-            <p>{text.browserBody}</p>
-          </div>
-
-          <div className="browser-grid" id="all-problems">
-            <aside className="filter-panel">
-              <div className="filter-head">
-                <span className="filter-kicker">⌁ {text.filterLabel}</span>
-                <strong>{text.categoryLabel}</strong>
               </div>
 
-              <div className="filter-current">
-                <span>{text.currentView}</span>
-                <p>{categoryMeta.name}</p>
-              </div>
-
-              <div className="filter-list" role="tablist" aria-label={text.categoryLabel}>
-                {categoryOrder.map((id) => {
-                  const active = id === current;
-                  return (
-                    <button
-                      key={id}
-                      className={`filter-option ${active ? 'active' : ''}`}
-                      onClick={() => {
-                        setCurrent(id);
-                        setExpanded(0);
-                      }}
-                      role="tab"
-                      aria-selected={active}
-                    >
-                      <span className="check-box" aria-hidden="true">
-                        {active ? '✓' : ''}
-                      </span>
-                      <span>{categories[id][lang].name}</span>
-                    </button>
-                  );
-                })}
+              <div className="hero-note-card">
+                <span className="mini-kicker">Sweden-first</span>
+                <p>
+                  {lang === 'sv'
+                    ? 'Mer kuraterad founder intelligence. Mindre ton av allmän frustration.'
+                    : 'More curated founder intelligence. Less generic complaint energy.'}
+                </p>
+                {routeLabel ? (
+                  <p className="route-badge">
+                    <strong>{text.routeLabel}:</strong> {routeLabel}
+                  </p>
+                ) : null}
               </div>
             </aside>
+          </div>
+        </section>
 
-            <section className="problem-panel">
-              <div className="browser-title-inline">
-                <div>
-                  <div className="eyebrow">
-                    <span className="eyebrow-dot" />
-                    {text.allProblemsLabel}
-                  </div>
-                  <h3>{categoryMeta.name}</h3>
-                  <p>{categoryMeta.subtitle}</p>
-                </div>
+        <section className="insights-section" id="insights">
+          <div className="container">
+            <div className="section-head">
+              <div className="eyebrow">
+                <span className="eyebrow-dot" />
+                {text.insightsLabel}
               </div>
+              <h2>{text.insightsTitle}</h2>
+              <p>{text.insightsBody}</p>
+            </div>
 
-              <div className="problem-table">
-                <div className="problem-table-head">
-                  <span>{text.problems}</span>
-                  <span>{text.score}</span>
-                  <span>{text.industry}</span>
-                  <span />
+            <div className="insight-grid">
+              {featured.map(({ id, categoryName, problem }) => (
+                <article className="insight-card" key={`${id}-${problem.title}`}>
+                  <div className="insight-topline">
+                    <span>{categoryName}</span>
+                    <strong>{problem.scores[0]}</strong>
+                  </div>
+                  <h3>{problem.title}</h3>
+                  <p>{problem.description}</p>
+                  <div className="signal-row">
+                    {problem.sourceFamilies.map((source) => (
+                      <span className="signal-pill" key={source}>
+                        {source}
+                      </span>
+                    ))}
+                  </div>
+                  <button className="inline-link" type="button" onClick={() => setCurrent(id)}>
+                    {text.featuredLabel}: {categoryName}
+                  </button>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="problem-browser" id="top-10-problems">
+          <div className="container browser-wrap">
+            <div className="section-head browser-head">
+              <div className="eyebrow">
+                <span className="eyebrow-dot" />
+                {text.browserEyebrow}
+              </div>
+              <h2>{text.browserTitle}</h2>
+              <p>{text.browserBody}</p>
+            </div>
+
+            <form className="search-panel" role="search" aria-label={text.searchLabel} noValidate>
+              <label className="search-label" htmlFor="site-search">
+                {text.searchLabel}
+              </label>
+              <div className="search-row">
+                <input
+                  id="site-search"
+                  name="q"
+                  type="search"
+                  autoComplete="off"
+                  enterKeyHint="search"
+                  placeholder={text.searchPlaceholder}
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  aria-describedby="site-search-hint site-search-results"
+                />
+                {query ? (
+                  <button className="btn ghost search-clear" type="button" onClick={() => setQuery('')}>
+                    {text.clearSearch}
+                  </button>
+                ) : null}
+              </div>
+              <p className="search-hint" id="site-search-hint">
+                {text.searchHint}
+              </p>
+              <p className="search-status" id="site-search-results" aria-live="polite">
+                {showingSearch ? `${searchResults.length} ${text.searchResultsCount}` : categoryMeta.name}
+              </p>
+            </form>
+
+            <div className="browser-grid" id="all-problems">
+              <aside className="filter-panel">
+                <div className="filter-head">
+                  <span className="filter-kicker">⌁ {text.filterLabel}</span>
+                  <strong>{text.categoryLabel}</strong>
                 </div>
 
-                <div className="problem-table-body">
-                  {categoryItems.map((item, idx) => {
-                    const isOpen = expanded === idx;
-                    return (
-                      <article className={`problem-row ${isOpen ? 'open' : ''}`} key={`${current}-${idx}`}>
-                        <div className="problem-row-main">
-                          <div className="problem-question-block">
-                            <div className="row-rank">
-                              {text.rank} #{idx + 1}
-                            </div>
-                            <h4>{item.title}</h4>
-                          </div>
-                          <div className="problem-score">{item.scores[0]}</div>
-                          <div className="problem-industry">{categoryMeta.name}</div>
-                          <button
-                            className="expand-btn"
-                            type="button"
-                            aria-expanded={isOpen}
-                            aria-label={isOpen ? text.close : text.open}
-                            onClick={() => setExpanded(isOpen ? -1 : idx)}
-                          >
-                            <span>{isOpen ? '–' : '+'}</span>
-                          </button>
-                        </div>
+                <div className="filter-current">
+                  <span>{text.currentView}</span>
+                  <p>{showingSearch ? text.searchResultsTitle : categoryMeta.name}</p>
+                </div>
 
-                        {isOpen && (
-                          <div className="problem-expand">
-                            <div className="expand-copy">
-                              <span className="expand-label">{text.explanation}</span>
-                              <p>{item.description}</p>
-                            </div>
-                            <div className="expand-meta">
-                              <div className="mini-metric">
-                                <span>{text.problemScore}</span>
-                                <strong>{item.scores[0]}</strong>
-                              </div>
-                              <div className="mini-metric">
-                                <span>{text.market}</span>
-                                <strong>{item.scores[1]}</strong>
-                              </div>
-                              <div className="mini-metric">
-                                <span>{text.trust}</span>
-                                <strong>{item.scores[2]}</strong>
-                              </div>
-                            </div>
-                            <div className="tag-strip">
-                              <span className="expand-label">{text.signalFamilies}</span>
-                              <div className="tag-row">
-                                {item.sourceFamilies.map((tag) => (
-                                  <span className="tag" key={tag}>
-                                    {tag}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                            <div className="expand-note">
-                              <span className="expand-label">{text.exactSources}</span>
-                              <p>{item.exactSources.join(' · ')}</p>
-                            </div>
-                            <div className="expand-note">
-                              <span className="expand-label">{text.whyThisMatters}</span>
-                              <p>{text.whyThisMattersBody}</p>
-                            </div>
-                          </div>
-                        )}
-                      </article>
+                <div className="filter-list" role="tablist" aria-label={text.categoryLabel}>
+                  {categoryOrder.map((id) => {
+                    const active = id === current;
+                    return (
+                      <button
+                        key={id}
+                        className={`filter-option ${active ? 'active' : ''}`}
+                        onClick={() => {
+                          setCurrent(id);
+                          setExpanded(0);
+                        }}
+                        role="tab"
+                        aria-selected={active}
+                        type="button"
+                      >
+                        <span className="check-box" aria-hidden="true">
+                          {active ? '✓' : ''}
+                        </span>
+                        <span>{categories[id][lang].name}</span>
+                      </button>
                     );
                   })}
                 </div>
-              </div>
-            </section>
-          </div>
-        </div>
-      </section>
+              </aside>
 
-      <section className="method-section" id="method">
-        <div className="container method-grid">
-          <div className="method-copy">
-            <span className="label">{text.methodLabel}</span>
-            <h3>{text.methodTitle}</h3>
-            <p>{text.methodBody}</p>
-          </div>
-          <div className="method-cards">
-            {text.methodCards.map(([title, body]) => (
-              <article className="method-card" key={title}>
-                <strong>{title}</strong>
-                <p>{body}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+              <section className="problem-panel" aria-label={showingSearch ? text.searchResultsTitle : categoryMeta.name}>
+                <div className="browser-title-inline">
+                  <div>
+                    <div className="eyebrow">
+                      <span className="eyebrow-dot" />
+                      {showingSearch ? text.searchResultsTitle : text.allProblemsLabel}
+                    </div>
+                    <h3>{showingSearch ? text.searchResultsTitle : categoryMeta.name}</h3>
+                    <p>{showingSearch ? text.searchHint : categoryMeta.subtitle}</p>
+                  </div>
+                </div>
 
-      <section className="mission-band" id="mission">
-        <div className="container mission-grid">
-          <div className="mission-card">
-            <span className="label">{text.missionLabel}</span>
-            <h3>{text.missionTitle}</h3>
-            <p>{text.missionBody}</p>
-          </div>
+                <div className="problem-table">
+                  <div className="problem-table-head">
+                    <span>{text.problems}</span>
+                    <span>{text.score}</span>
+                    <span>{text.industry}</span>
+                    <span />
+                  </div>
 
-          <div className="cta-card">
-            <span className="label">{text.ctaLabel}</span>
-            <h3>{text.ctaTitle}</h3>
-            <p>{text.ctaBody}</p>
-            <div className="hero-actions compact">
-              <a className="btn primary" href="#all-problems">
-                {text.heroSecondary}
-              </a>
+                  <div className="problem-table-body">
+                    {showingSearch ? (
+                      searchResults.length ? (
+                        searchResults.map((result, idx) => {
+                          const isOpen = expanded === idx;
+                          return (
+                            <article className={`problem-row ${isOpen ? 'open' : ''}`} key={result.id}>
+                              <div className="problem-row-main">
+                                <div className="problem-question-block">
+                                  <div className="row-rank">
+                                    {text.rank} #{result.rank}
+                                  </div>
+                                  <h4>{result.item.title}</h4>
+                                </div>
+                                <div className="problem-score">{result.item.scores[0]}</div>
+                                <div className="problem-industry">{result.categoryName}</div>
+                                <button
+                                  className="expand-btn"
+                                  type="button"
+                                  aria-expanded={isOpen}
+                                  aria-label={isOpen ? text.close : text.open}
+                                  onClick={() => setExpanded(isOpen ? -1 : idx)}
+                                >
+                                  <span>{isOpen ? '–' : '+'}</span>
+                                </button>
+                              </div>
+
+                              {isOpen ? (
+                                <div className="problem-expand">
+                                  <div className="expand-copy">
+                                    <span className="expand-label">{text.explanation}</span>
+                                    <p>{result.item.description}</p>
+                                  </div>
+                                  <div className="expand-meta">
+                                    <div className="mini-metric">
+                                      <span>{text.problemScore}</span>
+                                      <strong>{result.item.scores[0]}</strong>
+                                    </div>
+                                    <div className="mini-metric">
+                                      <span>{text.market}</span>
+                                      <strong>{result.item.scores[1]}</strong>
+                                    </div>
+                                    <div className="mini-metric">
+                                      <span>{text.trust}</span>
+                                      <strong>{result.item.scores[2]}</strong>
+                                    </div>
+                                  </div>
+                                  <div className="tag-strip">
+                                    <span className="expand-label">{text.signalFamilies}</span>
+                                    <div className="tag-row">
+                                      {result.item.sourceFamilies.map((tag) => (
+                                        <span className="tag" key={tag}>
+                                          {tag}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  </div>
+                                  <div className="expand-note">
+                                    <span className="expand-label">{text.exactSources}</span>
+                                    <p>{result.item.exactSources.join(' · ')}</p>
+                                  </div>
+                                </div>
+                              ) : null}
+                            </article>
+                          );
+                        })
+                      ) : (
+                        <div className="empty-state">
+                          <p>{text.searchResultsNone}</p>
+                        </div>
+                      )
+                    ) : (
+                      categoryItems.map((item, idx) => {
+                        const isOpen = expanded === idx;
+                        return (
+                          <article className={`problem-row ${isOpen ? 'open' : ''}`} key={`${current}-${idx}`}>
+                            <div className="problem-row-main">
+                              <div className="problem-question-block">
+                                <div className="row-rank">
+                                  {text.rank} #{idx + 1}
+                                </div>
+                                <h4>{item.title}</h4>
+                              </div>
+                              <div className="problem-score">{item.scores[0]}</div>
+                              <div className="problem-industry">{categoryMeta.name}</div>
+                              <button
+                                className="expand-btn"
+                                type="button"
+                                aria-expanded={isOpen}
+                                aria-label={isOpen ? text.close : text.open}
+                                onClick={() => setExpanded(isOpen ? -1 : idx)}
+                              >
+                                <span>{isOpen ? '–' : '+'}</span>
+                              </button>
+                            </div>
+
+                            {isOpen ? (
+                              <div className="problem-expand">
+                                <div className="expand-copy">
+                                  <span className="expand-label">{text.explanation}</span>
+                                  <p>{item.description}</p>
+                                </div>
+                                <div className="expand-meta">
+                                  <div className="mini-metric">
+                                    <span>{text.problemScore}</span>
+                                    <strong>{item.scores[0]}</strong>
+                                  </div>
+                                  <div className="mini-metric">
+                                    <span>{text.market}</span>
+                                    <strong>{item.scores[1]}</strong>
+                                  </div>
+                                  <div className="mini-metric">
+                                    <span>{text.trust}</span>
+                                    <strong>{item.scores[2]}</strong>
+                                  </div>
+                                </div>
+                                <div className="tag-strip">
+                                  <span className="expand-label">{text.signalFamilies}</span>
+                                  <div className="tag-row">
+                                    {item.sourceFamilies.map((tag) => (
+                                      <span className="tag" key={tag}>
+                                        {tag}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                                <div className="expand-note">
+                                  <span className="expand-label">{text.exactSources}</span>
+                                  <p>{item.exactSources.join(' · ')}</p>
+                                </div>
+                                <div className="expand-note">
+                                  <span className="expand-label">{text.whyThisMatters}</span>
+                                  <p>{text.whyThisMattersBody}</p>
+                                </div>
+                              </div>
+                            ) : null}
+                          </article>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+              </section>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <footer>
-        <div className="container footer-row">
-          <div>{text.footerLeft}</div>
-          <div>{text.footerRight}</div>
-        </div>
-      </footer>
-    </main>
+        <section className="method-section" id="method">
+          <div className="container method-grid">
+            <div className="method-copy">
+              <span className="label">{text.methodLabel}</span>
+              <h2>{text.methodTitle}</h2>
+              <p>{text.methodBody}</p>
+            </div>
+            <div className="method-cards">
+              {text.methodCards.map(([title, body]) => (
+                <article className="method-card" key={title}>
+                  <strong>{title}</strong>
+                  <p>{body}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="mission-band" id="mission">
+          <div className="container mission-grid">
+            <article className="mission-card">
+              <span className="label">{text.missionLabel}</span>
+              <h2>{text.missionTitle}</h2>
+              <p>{text.missionBody}</p>
+            </article>
+
+            <aside className="cta-card">
+              <span className="label">{text.ctaLabel}</span>
+              <h2>{text.ctaTitle}</h2>
+              <p>{text.ctaBody}</p>
+              <div className="hero-actions compact">
+                <a className="btn primary" href="#all-problems">
+                  {text.heroSecondary}
+                </a>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <footer>
+          <div className="container footer-grid">
+            <div>
+              <div className="footer-title">{text.footerLeft}</div>
+              <p>{text.footerRight}</p>
+            </div>
+            <nav aria-label={text.browseLabel}>
+              <div className="footer-nav-title">{text.browseLabel}</div>
+              <div className="footer-links">
+                <Link href="/architecture/">{text.architectureLink}</Link>
+                <Link href="/prototype/">{text.prototypeLink}</Link>
+                <Link href="/privacy/">{text.privacyLink}</Link>
+                <Link href="/terms/">{text.termsLink}</Link>
+                <a href="#home">{text.backToTop}</a>
+              </div>
+            </nav>
+          </div>
+        </footer>
+      </main>
+
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: homePageSchema }} />
+    </>
   );
 }
