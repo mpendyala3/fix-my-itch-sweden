@@ -464,8 +464,8 @@ nav {
 .hero-proof-grid div,
 .filter-current,
 .mini-metric {
-  padding: 0.875rem;
-  border-radius: 0.875rem;
+  padding: 0.7rem;
+  border-radius: 0.7rem;
   background: color-mix(in srgb, var(--panel-2) 75%, transparent);
   border: 1px solid var(--line);
 }
@@ -911,11 +911,11 @@ nav {
 
 .mini-metric span {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
 }
 
 .mini-metric strong {
-  font-size: 2rem;
+  font-size: 1.6rem;
 }
 
 .empty-state {
