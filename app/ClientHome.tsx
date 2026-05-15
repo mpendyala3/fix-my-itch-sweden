@@ -73,7 +73,7 @@ const copy = {
     industry: 'Kategori',
     explanation: 'Kort förklaring',
     signalFamilies: 'Signaltyper',
-    exactSources: 'Exempel på källor',
+    exactSources: 'Källa',
     whyThisMatters: 'Varför det är relevant',
     whyThisMattersBody:
       'Problemet återkommer i tillräckligt många sammanhang för att peka på verklig efterfrågan, men är samtidigt tillräckligt avgränsat för att kunna omsättas i en konkret produkt eller tjänst.',
@@ -161,7 +161,7 @@ const copy = {
     industry: 'Category',
     explanation: 'Short explanation',
     signalFamilies: 'Signal families',
-    exactSources: 'Example sources',
+    exactSources: 'Source',
     whyThisMatters: 'Why it matters',
     whyThisMattersBody:
       'The issue appears often enough across real contexts to signal demand, yet remains specific enough to be translated into a concrete product or service direction.',
@@ -811,10 +811,6 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                                   <span className="expand-label">{text.exactSources}</span>
                                   <p>{item.exactSources.join(' · ')}</p>
                                 </div>
-                                <div className="expand-note">
-                                  <span className="expand-label">{text.whyThisMatters}</span>
-                                  <p>{text.whyThisMattersBody}</p>
-                                </div>
                               </div>
                             ) : null}
                           </article>
@@ -840,7 +836,6 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
         <footer>
           <div className="container footer-grid">
             <nav aria-label={text.browseLabel}>
-              <div className="footer-nav-title">{text.browseLabel}</div>
               <div className="footer-links">
                 <Link href="/privacy/">{text.privacyLink}</Link>
                 <Link href="/terms/">{text.termsLink}</Link>

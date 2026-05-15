@@ -861,15 +861,29 @@ footer {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(16rem, 0.7fr);
+  grid-template-columns: 1fr;
   gap: 1rem;
   padding-top: 1.125rem;
   border-top: 1px solid var(--line);
+  justify-items: center;
 }
 
 .footer-title {
   font-weight: 600;
   margin-bottom: 0.5rem;
+}
+
+.footer-grid nav {
+  width: 100%;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem 2rem;
+  text-align: center;
 }
 
 .footer-links a:hover {
