@@ -106,10 +106,10 @@ const copy = {
     footerLeft: 'Lös verkliga problem — Sverige-först problem intelligence',
     footerRight: 'Kuraterat för verklig efterfrågan, inte för startup-teater.',
     rank: 'Rank',
-    severity: 'Severity',
-    tam: 'TAM',
-    whitespace: 'Whitespace',
-    trygghet: 'Trygghet',
+    severity: 'Severity Score',
+    tam: 'TAM Score',
+    whitespace: 'Whitespace Score',
+    trygghet: 'Trygghet Score',
     open: 'Öppna',
     close: 'Stäng',
     searchLabel: '',
@@ -200,10 +200,10 @@ const copy = {
     footerLeft: 'Solve real-world problems — Sweden-first problem intelligence',
     footerRight: 'Curated for real demand, not startup theatre.',
     rank: 'Rank',
-    severity: 'Severity',
-    tam: 'TAM',
-    whitespace: 'Whitespace',
-    trygghet: 'Trygghet',
+    severity: 'Severity Score',
+    tam: 'TAM Score',
+    whitespace: 'Whitespace Score',
+    trygghet: 'Trygghet Score',
     open: 'Open',
     close: 'Close',
     searchLabel: '',
@@ -908,23 +908,20 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                                 <div className="expand-copy">
                                   <p>{item.description}</p>
                                 </div>
-                                <div
-                                  className="expand-meta"
-                                  style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '0.5rem 0.85rem' }}
-                                >
-                                  <div className="mini-metric compact-metric">
+                                <div className="score-grid">
+                                  <div className="score-metric">
                                     <span>{text.severity}</span>
                                     <strong>{formatScoreOutOfTen(item.scores.severity)}/10</strong>
                                   </div>
-                                  <div className="mini-metric compact-metric">
+                                  <div className="score-metric">
                                     <span>{text.tam}</span>
                                     <strong>{formatScoreOutOfTen(item.scores.tam)}/10</strong>
                                   </div>
-                                  <div className="mini-metric compact-metric">
+                                  <div className="score-metric">
                                     <span>{text.whitespace}</span>
                                     <strong>{formatScoreOutOfTen(item.scores.whitespace)}/10</strong>
                                   </div>
-                                  <div className="mini-metric compact-metric">
+                                  <div className="score-metric">
                                     <span>{text.trygghet}</span>
                                     <strong>{formatScoreOutOfTen(item.scores.trygghet)}/10</strong>
                                   </div>
