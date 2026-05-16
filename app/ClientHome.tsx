@@ -908,20 +908,23 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
                                 <div className="expand-copy">
                                   <p>{item.description}</p>
                                 </div>
-                                <div className="expand-meta">
-                                  <div className="mini-metric">
+                                <div
+                                  className="expand-meta"
+                                  style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '0.5rem 0.85rem' }}
+                                >
+                                  <div className="mini-metric compact-metric">
                                     <span>{text.severity}</span>
                                     <strong>{formatScoreOutOfTen(item.scores.severity)}/10</strong>
                                   </div>
-                                  <div className="mini-metric">
+                                  <div className="mini-metric compact-metric">
                                     <span>{text.tam}</span>
                                     <strong>{formatScoreOutOfTen(item.scores.tam)}/10</strong>
                                   </div>
-                                  <div className="mini-metric">
+                                  <div className="mini-metric compact-metric">
                                     <span>{text.whitespace}</span>
                                     <strong>{formatScoreOutOfTen(item.scores.whitespace)}/10</strong>
                                   </div>
-                                  <div className="mini-metric">
+                                  <div className="mini-metric compact-metric">
                                     <span>{text.trygghet}</span>
                                     <strong>{formatScoreOutOfTen(item.scores.trygghet)}/10</strong>
                                   </div>

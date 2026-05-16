@@ -930,6 +930,23 @@ nav {
   font-size: 1.44rem;
 }
 
+.compact-metric {
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  min-width: 0;
+}
+
+.compact-metric span {
+  display: block;
+  margin-bottom: 0.22rem;
+}
+
+.compact-metric strong {
+  font-size: 1.44rem;
+}
+
 .empty-state {
   padding: 1.5rem 0;
 }
@@ -1141,11 +1158,13 @@ footer {
     margin-top: 1.125rem;
   }
 
-  .mini-metric span {
+  .mini-metric span,
+  .compact-metric span {
     font-size: 0.95rem;
   }
 
-  .mini-metric strong {
+  .mini-metric strong,
+  .compact-metric strong {
     font-size: 1.28rem;
   }
 
