@@ -940,17 +940,17 @@ nav {
 .score-metric {
   min-width: 0;
   padding: 0.95rem 1rem 1rem;
-  border: 1px solid rgba(17, 17, 17, 0.12);
+  border: 1px solid var(--line);
   border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.82);
-  color: rgba(17, 17, 17, 0.8);
+  background: color-mix(in srgb, var(--panel-2) 70%, transparent);
+  color: var(--text);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .score-metric span {
   display: block;
   margin-bottom: 0.28rem;
-  color: var(--text-soft);
+  color: inherit;
   font-size: 0.9375rem;
   line-height: 1.55;
 }
