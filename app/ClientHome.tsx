@@ -709,7 +709,7 @@ export function HomePage({ routeLabel }: { routeLabel?: string }) {
           <div className="container top-problems-wrap">
             <div className="section-head top-problems-head">
               <h2>{text.swipeTitle}</h2>
-              <p>{text.swipeBody}</p>
+              {text.swipeBody ? <p>{text.swipeBody}</p> : null}
             </div>
 
             <div className="top-problems-mobile" aria-label={text.swipeTitle}>

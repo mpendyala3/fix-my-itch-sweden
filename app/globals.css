@@ -1132,11 +1132,15 @@ footer {
 
   .top-problems-mobile {
     display: grid;
-    gap: 1rem;
+    gap: 0.5rem;
   }
 
-  .top-problems-head p {
-    max-width: 30rem;
+  .top-problems-head {
+    gap: 0.25rem;
+  }
+
+  .top-card-stack {
+    min-height: 21rem;
   }
 
   .top-card-controls {
