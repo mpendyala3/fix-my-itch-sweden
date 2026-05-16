@@ -950,7 +950,7 @@ nav {
 .score-metric span {
   display: block;
   margin-bottom: 0.28rem;
-  color: inherit;
+  color: var(--text-soft);
   font-size: 0.9375rem;
   line-height: 1.55;
 }
