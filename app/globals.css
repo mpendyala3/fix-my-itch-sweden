@@ -1226,7 +1226,7 @@ footer {
     border: none;
     box-shadow: none;
     max-width: 100%;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .filter-head {
@@ -1244,6 +1244,7 @@ footer {
     font-weight: 500;
     line-height: 1.2;
     color: var(--text);
+    padding-left: 0.04em;
   }
 
   .filter-current {
