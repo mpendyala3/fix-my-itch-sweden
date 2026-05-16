@@ -951,14 +951,14 @@ nav {
 }
 
 footer {
-  padding: 0.5rem 0 2rem;
+  padding: 0.125rem 0 0.75rem;
 }
 
 .footer-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1rem;
-  padding-top: 1.125rem;
+  gap: 0.5rem;
+  padding-top: 0.625rem;
   border-top: 1px solid var(--line);
   justify-items: center;
 }
