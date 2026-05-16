@@ -146,19 +146,13 @@ nav {
   stroke-linejoin: round;
 }
 
-.brand-detail.faint {
-  opacity: 0.78;
+.brand-check {
+  stroke-width: 2.4;
 }
 
-.brand-coin {
-  fill: var(--bg);
+.brand-accent {
   stroke: var(--text);
-  stroke-width: 1.75;
-}
-
-.brand-coin-mark {
-  stroke: var(--text);
-  stroke-width: 2.1;
+  stroke-width: 1.9;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
