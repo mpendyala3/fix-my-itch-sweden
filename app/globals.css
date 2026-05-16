@@ -1082,9 +1082,13 @@ footer {
     display: none;
   }
 
-  .hero-proof-grid,
-  .expand-meta {
+  .hero-proof-grid {
     grid-template-columns: 1fr;
+  }
+
+  .expand-meta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem 0.85rem;
   }
 
   .problem-table-head,
@@ -1135,6 +1139,14 @@ footer {
 
   .hero-signals {
     margin-top: 1.125rem;
+  }
+
+  .mini-metric span {
+    font-size: 0.95rem;
+  }
+
+  .mini-metric strong {
+    font-size: 1.28rem;
   }
 
   .hero-signal-row {
