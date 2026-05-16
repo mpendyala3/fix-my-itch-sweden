@@ -905,12 +905,20 @@ nav {
 }
 
 .expand-meta {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 1rem;
+}
+
+.mini-metric {
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
 }
 
 .mini-metric span {
   display: block;
-  margin-bottom: 0.36rem;
+  margin-bottom: 0.22rem;
 }
 
 .mini-metric strong {
