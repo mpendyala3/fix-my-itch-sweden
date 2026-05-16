@@ -100,7 +100,7 @@ img {
 }
 
 nav {
-  min-height: 5rem;
+  min-height: 4.25rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -122,7 +122,8 @@ nav {
   overflow: hidden;
 }
 
-.brand-mark img {
+.brand-mark img,
+.brand-mark svg {
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -235,7 +236,10 @@ nav {
   min-height: 100vh;
 }
 
-.hero-shell,
+.hero-shell {
+  padding-block: 0.75rem 1.5rem;
+}
+
 .top-problems-section,
 .insights-section,
 .problem-browser,
@@ -259,7 +263,7 @@ nav {
 }
 
 .hero-copy {
-  padding-block: 1.5rem 0.25rem;
+  padding-block: 0.5rem 0.25rem;
 }
 
 .mini-kicker {
@@ -290,6 +294,7 @@ nav {
 }
 
 .hero-copy h1 {
+  margin: 0.35rem 0 0.75rem;
   font-size: clamp(4.5rem, 15vw, 10.5rem);
 }
 
